@@ -1,0 +1,1934 @@
+﻿=====================================================================
+ CATÁLOGO DE SINAIS DO VHAL — GEELY EX2 (central IHU629G, Android 9)
+=====================================================================
+Fontes: logs gravados no carro pelo EX2 Live 3D
+  - vhal-log.txt de 10/11/2026 (2h45 rodando)
+  - vhal-log.txt de 17/11/2026 (17:43–17:55, trânsito urbano, vidros, setas, travas)
+  - diag.txt de 17/11/2026 (17:35–21:39, sinais assinados pelo app)
+  - documentação da central BR (lista do amigo) e modo guiado "Encontrar sinais"
+
+Como ler:
+  ID         = número da propriedade (VHAL / CarPropertyManager)
+  área       = sub-canal (portas, vidros etc.); "-" = área 0 (global)
+  status     = 0 normal, 3 = "indisponível" na ECARX, mas o valor VALE mesmo assim
+  Confiança  = CONFIRMADO (testado no carro) · FORTE (bate com o log) · CANDIDATO (provável)
+
+Como ler no Android: CarPropertyManager.getProperty(id, área) ou registerCallback(...).
+A central entrega quase tudo com status 3: não descartar valores com status 3.
+O app tem acesso porque o APK é assinado com a chave de plataforma da central.
+
+---------------------------------------------------------------------
+ 1. PORTAS, TRAVAS E VIDROS
+---------------------------------------------------------------------
+0x16400B00  DOOR_POS (portas)                                     CONFIRMADO
+            áreas: 0x1 diant. esq. · 0x4 diant. dir. · 0x10 tras. esq. · 0x40 tras. dir.
+                   0x10000000 capô (frunk) · 0x20000000 porta-malas
+            1 = aberta · 2 = fechada
+
+0x264020AA  trava das portas (as 4 áreas mudam juntas)                CANDIDATO
+            áreas 0x1, 0x4, 0x10, 0x40 · 1 = travada · 0 = destravada
+            (destravou e travou 2 s depois andando; destravou no fim do percurso)
+
+0x13400BC0  WINDOW_POS — posição de cada vidro (padrão Android)       FORTE
+            áreas: 0x10 diant. esq. · 0x40 diant. dir. · 0x100 tras. esq. · 0x400 tras. dir.
+            0 = fechado ... ~100 = todo aberto (subiu/desceu em passos de ~5 durante o comando)
+0x2140A681  botão do vidro (por porta)                                FORTE
+            áreas: 0x1 diant. esq. · 0x4 diant. dir. · 0x10 tras. esq. · 0x40 tras. dir.
+            4 = solto · 5 e 6 = apertado (um para cada sentido)
+0x2140A623  motor/estado do vidro diant. esq.                         CANDIDATO   0, 1 = movendo · 2 = parado
+0x2140A556  idem vidro diant. dir.                                    CANDIDATO
+0x2140405E  idem vidro tras. esq.                                     CANDIDATO
+0x2140405F  idem vidro tras. dir.                                     CANDIDATO
+
+---------------------------------------------------------------------
+ 2. LUZES
+---------------------------------------------------------------------
+0x2140A205  alavanca da seta                                          CONFIRMADO   0 nada · 1 esquerda · 2 direita
+0x2140209C  lâmpada da seta esquerda                                  CONFIRMADO   pisca 1↔2 (≈0,4 s) · 17 ao desligar o carro
+0x2140209D  lâmpada da seta direita                                   CONFIRMADO   idem
+0x2140A632  pisca-alerta (BCM_HazardSts)                              CONFIRMADO   1 = ligado
+0x21121300  farol alto                                                CONFIRMADO   1 = ligado (oscila durante o pisca-alerta: ignorar nele)
+0x21121400  farol baixo                                               FORTE        1 = ligado · 0 = desligado
+0x21121900  DRL (luz diurna)                                          FORTE        1 = ligada · 0 = desligada
+0x2140B04A  luz de freio                                              FORTE        5 = acesa · 4 = apagada (troca junto com o pedal do freio, ao milissegundo)
+0x21408015  modo noturno da central (liga com o farol)                CONFIRMADO   reserva do farol
+0x11400E00  HEADLIGHTS_STATE (padrão)        — não responde no EX2 BR
+0x11400E01  HIGH_BEAM_LIGHTS_STATE (padrão)  — não responde no EX2 BR
+0x11400E03  HAZARD_LIGHTS_STATE (padrão)     — não responde no EX2 BR
+0x2140139C / 0x2140139D / 0x21407105  setas antigas — sem efeito no EX2 BR
+
+---------------------------------------------------------------------
+ 3. DIREÇÃO, MOVIMENTO E PEDAIS
+---------------------------------------------------------------------
+0x11600207  PERF_VEHICLE_SPEED — velocidade                           CONFIRMADO   JÁ em km/h (float), ~10 por segundo
+0x2140A319  velocidade bruta                                          FORTE        km/h = valor × 0,05625
+0x11600208  velocidade/rotação derivada                               CANDIDATO    ≈ velocidade(km/h) × 19
+0x101000    ângulo do volante (graus, float)                          CONFIRMADO   ±540 · roda dianteira ≈ volante ÷ 15,5
+0x11600209  PERF_STEERING_ANGLE (padrão)     — não usado (reserva)
+0x2140800C  pedal do freio                                            CONFIRMADO   1 = pisado · 0 = solto
+0x21408016  pedal do acelerador (posição)                             CANDIDATO    0 solto ... múltiplos de 4 (visto até ~460)
+0x21403032  força/aceleração (regeneração ↔ tração)                   CANDIDATO    −5 ... +4 (negativo freando/regenerando)
+0x2140A274  contador de pulsos da roda (esq.)                         FORTE        0–4095, dá a volta; ritmo acompanha a velocidade
+0x2140A275  contador de pulsos da roda (dir.)                         FORTE        idem
+
+---------------------------------------------------------------------
+ 4. MARCHA E ESTADO DO CARRO
+---------------------------------------------------------------------
+0x11400401  marcha                                                    CONFIRMADO   4 P · 2 R · 1 N · 8 D
+0x2140A605  marcha (2ª codificação)                                   FORTE        1 P · 2 R · 3 N · 4 D
+0x20061000  em P                                                      CONFIRMADO   1 = em P
+0x11400400  GEAR_SELECTION (padrão)          — sem assinatura, não necessário
+0x11400409  ignição                                                   CONFIRMADO   2 desligado · 3 acessório · 4 ligado/pronto
+0x2140A160  desconhecido (troca 1↔2 a cada alguns segundos rodando)   CANDIDATO
+0x2140A480  desconhecido (troca 1↔2 rodando)                          CANDIDATO
+0x2140A161 / 0x2140B044  trocaram uma vez ao estacionar               CANDIDATO
+
+---------------------------------------------------------------------
+ 5. TEMPERATURA
+---------------------------------------------------------------------
+0x2140A377  AC_AMBIENT_TEMP — temperatura externa                     CONFIRMADO   °C = (valor − 80) ÷ 2 (o mesmo da barra do carro)
+0x24120400  temperatura de algum componente (NÃO é a externa)         CANDIDATO    60–67 °C rodando (17/11); 28–33 no dia 10
+0x404000    igual ao anterior + 1 °C                                  CANDIDATO    provável bateria/motor/arrefecimento
+0x11600703  ENV_OUTSIDE_TEMPERATURE (padrão) — fica sempre 25,0: inútil
+0x21408006  desconhecido, 135–137 (muda devagar)                      CANDIDATO
+
+---------------------------------------------------------------------
+ 6. VIAGEM, AUTONOMIA E ENERGIA
+---------------------------------------------------------------------
+0x11600204  PERF_ODOMETER — hodômetro total (km)                      FORTE        ex.: 15151,0 · sobe de 0,1 em 0,1
+0x24801500  hodômetros parciais (km)                                  FORTE        área 0x1 = trip A (8152 km) · área 0x2 = viagem atual (8,5 → 10,1)
+0x24801600  tempo rodando (minutos)                                   FORTE        área 0x1 = total (16511) · área 0x2 = viagem atual (sobe 1 por minuto)
+0x24801200  consumo médio?                                            CANDIDATO    área 0x1 = 41→40 · área 0x2 = 17→15 (kWh/100 km?)
+0x11600308  RANGE_REMAINING — autonomia (km, float)                   FORTE        247 → 244
+0x101900    autonomia (km, inteiro)                                   FORTE        igual ao anterior
+0x403000    energia/carga restante (cai devagar)                      CANDIDATO    4850 → 4847
+0x2140A693  desconhecido, ~1970–2050 a cada 5 s                       CANDIDATO    (tensão/corrente da bateria?)
+0x2140A6F8  desconhecido, 758–1024, poucas vezes                      CANDIDATO
+0x24804100 / 0x24804300 / 0x24804400  floats lentos a cada 10 s       CANDIDATO    90,006 · 3,505 · 6,488 (sensor/posição?)
+0x2170A62E  pacote de bytes a cada 60 s                               CANDIDATO
+
+---------------------------------------------------------------------
+ 7. PARA USAR EM NOVOS PROJETOS
+---------------------------------------------------------------------
+- Assinar (registerCallback) em vez de consultar: quase tudo chega por evento.
+  Consultar a cada 250 ms só o que não aceita assinatura.
+- Velocidade e volante chegam ~10 vezes por segundo: não gravar cada valor em arquivo.
+- Valores com status 3 valem. O valor 0 pode significar "sem dado" em alguns sinais.
+- Setas: usar a alavanca 0x2140A205 (estável) + as lâmpadas 0x2140209C/D (piscam).
+- Freio: pedal 0x2140800C ou luz 0x2140B04A.
+- Temperatura externa: só 0x2140A377. Os sinais 0x24120400 e 0x404000 NÃO são a externa.
+- O carro "dorme" e acorda mandando BOOT_COMPLETED sem reiniciar o processo do app.
+
+---------------------------------------------------------------------
+ 8. CARREGAMENTO (do app geelybattery 0.3.0, análise só do arquivo; 18/11/2026)
+---------------------------------------------------------------------
+Todos existem na central do usuário (log de 17/11, status 0, valor 0 com o carro andando).
+Leitura: CarPropertyManager.getFloatProperty(id, 0) (se der erro, getIntProperty).
+0x24140100  CHARGING_WORK_VOLTAGE — tensão da carga (V)                 A CONFIRMAR CARREGANDO
+0x24140200  CHARGING_WORK_CURRENT — corrente da carga (A)               A CONFIRMAR CARREGANDO
+0x24140300  CHARGING_ESTIMATED_TIME — tempo restante (min)              A CONFIRMAR CARREGANDO
+0x24205400  BATTERY_CHARGING_CURRENT_POWER — potência entrando (kW)     A CONFIRMAR CARREGANDO
+0x24205500  CHARGING_WORK_TIME — tempo carregando                       A CONFIRMAR CARREGANDO
+0x24207100  DC_CHARGING_POWER — potência na carga DC (kW)               A CONFIRMAR CARREGANDO
+0x24205C00  CHARGING_DISCHARGING_STATE — estado da carga (função ECARX; o app traduz pelo
+            com.ecarx.xui.adaptapi IWrapper.getPropertyAdaptValue). Códigos traduzidos:
+            0x24205C01 sem carga · C02 carregando AC · C03 fim · C04 completa · C05/C06/C25 AC pausada
+            C08 descarregando (V2L) · C15 carregando DC · C26 fim da DC.
+            Lido direto deu 2 com o carro andando: o valor direto pode não ser o traduzido → confirmar.
+            (sinal direto equivalente no app: 0x2140737E — não existe na central do usuário)
+0x24130200  CHARGING_PLUG_STATE — plugue: conectado = 0x24130213 / 0x24130214 / 0x2413021B
+            (andando: 0x24130212 = desconectado)
+0x11600204  hodômetro (km) — para "km desde a última carga"
+SOC (%):    o app usa 0x2140A6ED (não existe aqui) ou EV_BATTERY_LEVEL 0x11600309 (aqui fixo 150000,
+            status 3: inútil). Candidato: 0x403000 (4850 → 48,50 %?) — confirmar carregando.
+Tensão/corrente de ENTRADA AC (OBC_uInAct/OBC_iInAct) e da bateria (BMSH_BattVolt/BMSH_BattCurr):
+            o app lê direto do barramento CAN (não pelo VHAL) — não usados aqui.
+=====================================================================
+ ANEXO — TODAS AS 1755 PROPRIEDADES VISTAS EM 17/11/2026
+ (ordenadas pelas que mais mudaram; valores = os mais comuns no log)
+=====================================================================
+ID           área   tipo   status   trocas valores vistos (mais comuns primeiro)
+0x2140a275   -      int    3        7185   2835, 2553, 616, 1359, 3792, 1663
+0x2140a274   -      int    3        7174   3193, 3120, 3953, 3354, 674, 3296
+0x11600207   -      float  0        5580   37.85625, 37.8, 37.51875, 42.35625, 43.368748, 40.3875
+0x2140a319   -      int    3        5561   673, 672, 667, 753, 771, 718
+0x21408016   -      int    3        3219   0, 12, 4, 8, 24, 16
+0x11600208   -      float  0        3106   715, 714, 0, 810, 713, 718
+0x101000     -      texto  3        2424   4.0, 5.0, 0.0, 1.0, -1.0, -2.0
+0x21403032   -      int    3        342    0, 1, -1, -2, -3, -4
+0x2140a693   -      int    3        121    2033, 2006, 2014, 1999, 1980, 1970
+0x2140b04a   -      int    0        76     4, 5
+0x2140800c   -      int    0        75     1, 0
+0x24804400   -      ?80    0        71     6.489543, 6.488644, 6.4885273, 6.488472, 6.488477, 6.488166
+0x24804300   -      ?80    0        70     3.5051198, 3.50531, 3.505237, 3.5051908, 3.5051804, 3.5050027
+0x24804100   -      ?80    0        69     90.00624, 90.00634, 90.00683, 90.006165, 90.005264, 90.00605
+0x2140209d   -      int    0        61     1, 2
+0x13400bc0   0x40   int    3        47     0, 23, 32, 47, 51, 70
+0x13400bc0   0x10   int    3        45     0, 8, 32, 52, 71, 13
+0x13400bc0   0x400  int    3        38     0, 7, 35, 46, 12, 18
+0x13400bc0   0x100  int    3        37     0, 25, 30, 59, 82, 8
+0x2140209c   -      int    0        33     1, 2
+0x11600204   -      float  0        27     15150.9, 15151.0, 15151.101, 15151.2, 15151.3, 15151.4
+0x2140a480   -      int    3        27     2, 1
+0x24801500   0x1    ?80    0        27     8152.2, 8152.3003, 8152.4, 8152.5, 8152.6, 8152.7
+0x24801500   0x2    ?80    0        27     8.5, 8.6, 8.7, 8.8, 8.900001, 9.0
+0x2140a160   -      int    0        20     1, 2
+0x24120400   -      ?12    3        19     66.0, 65.9, 65.5, 65.8, 65.700005, 65.6
+0x404000     -      int    0        19     67.0, 66.9, 66.5, 66.8, 66.700005, 66.6
+0x2140a205   -      int    3        15     0, 2, 1
+0x2170a62e   -      bytes  3        12     [B@436f14e, [B@445843c, [B@2886fc9, [B@76c2342, [B@1603a77, [B@6cd23f8
+0x24801600   0x1    ?80    0        12     16511, 16512, 16513, 16514, 16515, 16516
+0x24801600   0x2    ?80    0        12     30, 31, 32, 33, 34, 35
+0x21408006   -      int    3        9      137, 136, 135
+0x2140a681   0x1    int    3        7      4, 6, 5
+0x101900     -      texto  0        5      246, 245, 247, 244
+0x11400401   -      int    0        5      8, 1, 2, 4
+0x11600308   -      float  0        5      247.0, 246.0, 245.0, 244.0
+0x2140a377   -      int    3        5      138, 139, 140, 141, 142, 143
+0x2140a605   -      int    0        5      4, 3, 2, 1
+0x2140a681   0x10   int    3        5      4, 6, 5
+0x2140a681   0x4    int    3        5      4, 6, 5
+0x2140a681   0x40   int    3        5      4, 5, 6
+0x2140a6f8   -      int    0        5      944, 1024, 758, 903, 925, 863
+0x2140405e   -      int    3        4      2, 0, 1
+0x2140405f   -      int    3        4      2, 0, 1
+0x2140a556   -      int    3        4      2, 0, 1
+0x2140a623   -      int    3        4      2, 0, 1
+0x24801200   0x2    ?80    0        3      16.0, 17.0, 15.0
+0x264020aa   0x1    int    3        3      1, 0
+0x264020aa   0x10   int    3        3      1, 0
+0x264020aa   0x4    int    3        3      1, 0
+0x264020aa   0x40   int    3        3      1, 0
+0x403000     -      int    0        3      4850.0, 4849.0, 4848.0, 4847.0
+0x201300     -      bool   3        1      2102021, 0
+0x21121300   -      ?12    0        1      1, 0
+0x2140a161   -      int    0,1      1      1, 2
+0x2140b044   -      int    3        1      2, 1
+0x24801200   0x1    ?80    0        1      41.0, 40.0
+0x2a010100   0x5    ?01    3        1      10, 0
+0x100200     0x1    texto  3        0      0
+0x10020200   -      ?02    0        0      0
+0x100300     0x2    texto  3        0      0
+0x10040500   0x75   ?04    3        0      false
+0x10050700   0x1    ?05    3        0      0
+0x10050700   0x4    ?05    3        0      0
+0x10080100   0x75   ?08    3        0      false
+0x10080200   0x5    ?08    3        0      false
+0x100a0100   -      ?0a    3        0      0
+0x100b0100   0x75   ?0b    3        0      false
+0x100b0300   0x75   ?0b    3        0      0
+0x100b0400   0x75   ?0b    3        0      0
+0x100b0500   0x100b0401 ?0b    3        0      0
+0x100b0500   0x100b0402 ?0b    3        0      0
+0x100b0500   0x100b0403 ?0b    3        0      0
+0x100c00     -      texto  3        0      0
+0x100c0100   0x75   ?0c    3        0      false
+0x100c0200   -      ?0c    3        0      0
+0x100d0300   -      ?0d    0        0      true
+0x10100400   0x75   texto  3        0      false
+0x10100600   -      texto  0        0      true
+0x10100700   -      texto  3        0      false
+0x10100800   -      texto  3        0      false
+0x101300     -      texto  3        0      0.0
+0x101400     -      texto  0        0      0.0
+0x10140200   -      ?14    3        0      0
+0x10141100   0x75   ?14    0        0      false
+0x10142100   0x1    ?14    3        0      0
+0x10142300   -      ?14    3        0      0
+0x101800     -      texto  3        0      0
+0x10200c00   0x75   bool   3        0      false
+0x11100100   -      texto  3        0      LB3EH1SF2TX022945
+0x11100101   -      texto  3        0      Toy Vehicle
+0x11200308   -      bool   3        0      false
+0x1120030a   -      bool   3        0      false
+0x1120030b   -      bool   3        0      false
+0x11200405   -      bool   0        0      false
+0x11200407   -      bool   0        0      0
+0x1120040a   -      bool   3        0      false
+0x1120040b   -      bool   3        0      false
+0x11200b45   -      bool   3        0      0
+0x11200f05   -      bool   3        0      true
+0x11400108   -      int    3        0      4
+0x11400109   -      int    3        0      1
+0x11400303   -      int    3        0      2
+0x11400400   -      int    0        0      0
+0x1140050d   0x1    int    3        0      0
+0x1140050e   -      int    3        0      49
+0x11400600   -      int    3        0      36
+0x11400602   -      int    3        0      113
+0x11400605   -      int    3        0      145
+0x11400e02   -      int    3        0      1
+0x11400e12   -      int    3        0      256
+0x11400e13   -      int    3        0      256
+0x11410105   -      int[]  3        0      <array>
+0x11410107   -      int[]  3        0      <array>
+0x1141010b   -      int[]  3        0      <array>
+0x1141010c   -      int[]  3        0      <array>
+0x11410a20   -      int[]  3        0      <array>
+0x11510306   -      long[] 3        0      <array>
+0x11600104   -      float  3        0      15000.0
+0x11600106   -      float  3        0      150000.0
+0x11600210   -      float  3        0      0.0
+0x11600304   -      float  3        0      101.0
+0x11600305   -      float  0        0      0.0
+0x11600307   -      float  3        0      15000.0
+0x11600309   -      float  3        0      150000.0
+0x1160030c   -      float  3        0      0.0
+0x11600703   -      float  3        0      25.0
+0x13200504   0x1    bool   3        0      false
+0x13200504   0x2    bool   3        0      false
+0x13200514   0x1    bool   3        0      false
+0x13200514   0x2    bool   3        0      false
+0x13200bc4   0x540  bool   3        0      false
+0x13400bc0   0x10000 int    3        0      0
+0x13400bc0   0x20000 int    3        0      0
+0x13400bc1   0x10   int    3        0      0
+0x13400bc1   0x100  int    3        0      0
+0x13400bc1   0x10000 int    3        0      0
+0x13400bc1   0x20000 int    3        0      0
+0x13400bc1   0x40   int    3        0      0
+0x13400bc1   0x400  int    3        0      0
+0x15200505   0x75   bool   0        0      true
+0x15200506   0x75   bool   0        0      false
+0x15200507   0x1    bool   0        0      false
+0x15200508   0x75   bool   0        0      true
+0x15200509   0x75   bool   3        0      false
+0x1520050a   0x1    bool   0        0      false
+0x15200510   0x5    bool   0        0      true
+0x15200512   0x75   bool   3        0      false
+0x15200514   0x2    bool   0        0      false
+0x15400500   0x5    int    0        0      1
+0x15400501   0x1    int    0        0      1
+0x1540050b   0x1    int    3        0      0
+0x1540050b   0x4    int    3        0      0
+0x15400513   0x1    int    3        0      0
+0x15400513   0x4    int    3        0      0
+0x15400b86   0x1    int    3        0      0
+0x15400b86   0x4    int    3        0      0
+0x15400b88   0x1    int    3        0      0
+0x15400b88   0x4    int    3        0      0
+0x15400b8c   0x1    int    3        0      0
+0x15400b8c   0x4    int    3        0      0
+0x15410511   0x75   int[]  3        0      <array>
+0x15600503   0x1    float  0        0      23.0
+0x15600503   0x4    float  3        0      17.0
+0x16400b01   0x1    int    3        0      false
+0x16400b01   0x10   int    3        0      false
+0x16400b01   0x10000000 int    0        0      true
+0x16400b01   0x20000000 int    3        0      false
+0x16400b01   0x4    int    3        0      false
+0x16400b01   0x40   int    3        0      false
+0x17600309   0x1    float  3        0      0.0
+0x17600309   0x2    float  3        0      0.0
+0x17600309   0x4    float  3        0      0.0
+0x17600309   0x8    float  3        0      0.0
+0x200100     -      bool   3        0      2097413
+0x20020100   -      ?02    3        0      false
+0x20020300   -      ?02    0        0      false
+0x20020500   -      ?02    0        0      537003267
+0x20040600   -      ?04    0        0      0
+0x20040700   -      ?04    0        0      0
+0x20060300   -      ?06    3        0      1
+0x20060400   -      ?06    0,1      0      false
+0x20060500   -      ?06    0        0      false
+0x20061000   -      ?06    3        0      1
+0x20070100   -      ?07    3        0      0
+0x20070200   -      ?07    3        0      0
+0x20070500   -      ?07    3        0      537330945
+0x20070600   -      ?07    3        0      0
+0x20070700   -      ?07    3        0      0
+0x20070800   -      ?07    3        0      537331715
+0x20070a00   -      ?07    3        0      0
+0x20070e00   -      ?07    3        0      false
+0x20071000   -      ?07    3        0      0
+0x20080300   -      ?08    3        0      0
+0x20080400   -      ?08    0        0      1
+0x20080600   -      ?08    3        0      0
+0x20090200   0x3    ?09    3        0      true
+0x20090300   0x3    ?09    3        0      0
+0x200a0200   -      ?0a    3        0      537526787
+0x200a0800   -      ?0a    3        0      0
+0x200a0900   0x5    ?0a    3        0      131071
+0x200b0200   -      ?0b    3        0      0
+0x200c0100   0x1    ?0c    0        0      false
+0x200c0200   0x2    ?0c    3        0      1
+0x200c0300   -      ?0c    0        0      1
+0x200e0100   -      ?0e    3        0      false
+0x200e0200   -      ?0e    3        0      537788929
+0x20100300   -      texto  0        0      true
+0x20100400   -      texto  3        0      537920513
+0x20110100   -      ?11    3        0      false
+0x20120100   -      ?12    3        0      0
+0x20150400   -      ?15    3        0      0
+0x201600     -      bool   3        0      2102785
+0x20160100   -      ?16    3        0      0
+0x20160900   -      ?16    3        0      false
+0x20161000   -      ?16    3        0      0
+0x20170100   0x1    ?17    3        0      false
+0x20170100   0x4    ?17    3        0      false
+0x201b0100   -      ?1b    0        0      0
+0x20220400   -      ?22    0        0      1
+0x202300     -      bool   3        0      2106113
+0x202400     -      bool   3        0      2106113
+0x20270b00   -      ?27    0        0      false
+0x20308b00   -      ?30    3        0      0
+0x20308c00   -      ?30    3        0      false
+0x20309900   -      ?30    0        0      false
+0x2030b900   -      ?30    3        0      0
+0x2030ba00   -      ?30    0        0      false
+0x2030bb00   -      ?30    0        0      0
+0x20426500   -      ?42    3        0      false
+0x21030400   -      ?03    3        0      0
+0x21030500   -      ?03    3        0      0
+0x21050c00   -      ?05    3        0      1
+0x21051000   -      ?05    3        0      true
+0x21051800   -      ?05    3        0      1
+0x21100104   -      texto  3        0      Vendor String Property
+0x21100200   -      texto  0        0      false
+0x21100300   -      texto  3        0      0
+0x2110300b   -      texto  3        0      
+0x21103015   -      texto  3        0      
+0x21103016   -      texto  3        0      
+0x21103018   -      texto  3        0      
+0x2110301a   -      texto  3        0      
+0x2110302e   -      texto  3        0      
+0x21103030   -      texto  3        0      
+0x21104500   -      texto  3        0      IHU629G0128AEF
+0x21109000   -      texto  3        0      
+0x21109003   -      texto  3        0      SW0E22H0128H111100000
+0x2110901d   -      texto  3        0      
+0x21109038   -      texto  3        0      
+0x21109039   -      texto  3        0      
+0x2110903a   -      texto  3        0      
+0x2110903b   -      texto  3        0      
+0x21109041   -      texto  3        0      
+0x2110a001   -      texto  3        0      
+0x2110a002   -      texto  3        0      
+0x2110a003   -      texto  3        0      IHU629G0MAT1D00010006597
+0x2110a004   -      texto  3        0      2500606608387819T1D13927
+0x2110a005   -      texto  3        0      
+0x2110a006   -      texto  3        0      
+0x2110a008   -      texto  3        0      
+0x2110a62c   -      texto  3        0      2.1
+0x2110a662   -      texto  3        0      
+0x2110a6a6   -      texto  3        0      null
+0x21110900   -      ?11    3        0      0
+0x21110d00   -      ?11    3        0      0
+0x21110e00   -      ?11    3        0      0
+0x21110f00   -      ?11    3        0      554766087
+0x21111400   -      ?11    3        0      554767362
+0x21111800   -      ?11    0        0      1
+0x21111900   -      ?11    3        0      false
+0x21121900   -      ?12    3        0      0
+0x21121a00   -      ?12    3        0      0
+0x212001cd   -      bool   3        0      0
+0x214001c2   -      int    3        0      0
+0x21401000   -      int    3        0      0
+0x21401001   -      int    3        0      0
+0x21401003   -      int    3        0      0
+0x21401006   -      int    3        0      0
+0x21401007   -      int    3        0      0
+0x21401008   -      int    3        0      0
+0x21401009   -      int    3        0      0
+0x2140100a   -      int    3        0      0
+0x2140100b   -      int    3        0      0
+0x2140100c   -      int    3        0      0
+0x2140100d   -      int    3        0      0
+0x2140100e   -      int    3        0      0
+0x2140100f   -      int    3        0      0
+0x21401016   -      int    3        0      0
+0x21401019   -      int    3        0      0
+0x2140101d   -      int    3        0      0
+0x21401021   -      int    3        0      0
+0x2140102c   -      int    3        0      0
+0x2140102e   -      int    3        0      0
+0x21401038   -      int    3        0      0
+0x2140103e   -      int    3        0      0
+0x21401058   -      int    3        0      0
+0x2140105b   -      int    3        0      0
+0x2140105c   -      int    3        0      0
+0x2140139c   -      int    0        0      0
+0x2140139d   -      int    0        0      0
+0x21402000   -      int    3        0      0
+0x21402006   -      int    3        0      0
+0x21402007   -      int    3        0      0
+0x2140200e   -      int    3        0      0
+0x2140200f   -      int    3        0      0
+0x21402011   -      int    3        0      0
+0x21402017   -      int    3        0      0
+0x21402019   -      int    3        0      0
+0x2140201b   -      int    3        0      0
+0x21402020   -      int    3        0      0
+0x21402021   -      int    3        0      0
+0x21402022   -      int    3        0      0
+0x21402023   -      int    3        0      0
+0x21402024   -      int    3        0      0
+0x21402025   -      int    3        0      0
+0x21402026   -      int    3        0      0
+0x21402027   -      int    3        0      0
+0x21402028   -      int    3        0      0
+0x21402029   -      int    3        0      0
+0x2140202a   -      int    3        0      0
+0x2140202c   -      int    3        0      0
+0x2140202d   -      int    3        0      0
+0x2140202e   -      int    3        0      0
+0x2140202f   -      int    3        0      0
+0x21402033   -      int    3        0      0
+0x21402034   -      int    3        0      0
+0x2140204c   -      int    3        0      0
+0x21402056   -      int    3        0      0
+0x21402057   -      int    3        0      0
+0x21402058   -      int    3        0      0
+0x2140205a   -      int    3        0      0
+0x2140205d   -      int    3        0      0
+0x2140205e   -      int    3        0      0
+0x2140205f   -      int    3        0      0
+0x21402060   -      int    3        0      0
+0x21402061   -      int    3        0      0
+0x21402062   -      int    3        0      0
+0x21402065   -      int    3        0      0
+0x21402066   -      int    3        0      0
+0x21402068   -      int    3        0      0
+0x21402069   -      int    3        0      0
+0x2140206a   -      int    3        0      0
+0x2140206b   -      int    3        0      0
+0x2140206c   -      int    3        0      0
+0x2140206d   -      int    3        0      0
+0x2140206e   -      int    3        0      0
+0x2140206f   -      int    3        0      0
+0x21402070   -      int    3        0      0
+0x21402071   -      int    3        0      0
+0x21402072   -      int    3        0      0
+0x21402073   -      int    3        0      0
+0x21402074   -      int    3        0      0
+0x21402075   -      int    3        0      0
+0x21402087   -      int    3        0      0
+0x2140208a   -      int    3        0      0
+0x2140208f   -      int    3        0      0
+0x21402090   -      int    3        0      0
+0x21402091   -      int    3        0      0
+0x21402092   -      int    3        0      0
+0x21402098   -      int    3        0      0
+0x2140209e   -      int    3        0      0
+0x2140209f   -      int    3        0      0
+0x214020a0   -      int    3        0      0
+0x214020a1   -      int    3        0      0
+0x214020a5   -      int    3        0      0
+0x214020a6   -      int    3        0      0
+0x214020a7   -      int    3        0      0
+0x214020ac   -      int    3        0      0
+0x214020ad   -      int    3        0      0
+0x214020ae   -      int    3        0      0
+0x214020af   -      int    3        0      0
+0x214020b0   -      int    3        0      0
+0x214020b1   -      int    3        0      0
+0x214020bd   -      int    3        0      0
+0x214020be   -      int    3        0      0
+0x214020c4   -      int    3        0      0
+0x214020cb   -      int    3        0      0
+0x214020cc   -      int    3        0      0
+0x214020cd   -      int    3        0      0
+0x214020ce   -      int    3        0      0
+0x214020cf   -      int    3        0      0
+0x214020d0   -      int    3        0      0
+0x214020d1   -      int    3        0      0
+0x214020d2   -      int    3        0      0
+0x214020d3   -      int    3        0      0
+0x214020d4   -      int    3        0      0
+0x214020d6   -      int    3        0      0
+0x214020d7   -      int    3        0      0
+0x214020d8   -      int    3        0      0
+0x214020e0   -      int    3        0      0
+0x214020e3   -      int    3        0      0
+0x214020e4   -      int    3        0      0
+0x214020e5   -      int    3        0      0
+0x214020e6   -      int    3        0      0
+0x21403000   -      int    3        0      0
+0x21403002   -      int    3        0      0
+0x21403003   -      int    3        0      0
+0x21403004   -      int    3        0      0
+0x21403005   -      int    3        0      0
+0x21403006   -      int    3        0      0
+0x21403007   -      int    3        0      0
+0x21403008   -      int    3        0      0
+0x21403009   -      int    3        0      0
+0x2140300a   -      int    3        0      0
+0x2140300c   -      int    3        0      0
+0x2140300d   -      int    3        0      0
+0x2140300e   -      int    3        0      0
+0x2140300f   -      int    3        0      0
+0x21403010   -      int    3        0      0
+0x21403011   -      int    3        0      0
+0x21403012   -      int    3        0      0
+0x21403013   -      int    3        0      0
+0x21403014   -      int    3        0      0
+0x21403017   -      int    3        0      0
+0x21403019   -      int    3        0      0
+0x2140301b   -      int    3        0      0
+0x2140301c   -      int    3        0      0
+0x2140301d   -      int    3        0      0
+0x2140301e   -      int    3        0      0
+0x2140301f   -      int    3        0      0
+0x21403020   -      int    3        0      0
+0x21403021   -      int    3        0      0
+0x21403022   -      int    3        0      0
+0x21403023   -      int    3        0      0
+0x21403024   -      int    3        0      0
+0x21403025   -      int    3        0      0
+0x21403026   -      int    3        0      0
+0x21403027   -      int    3        0      0
+0x21403028   -      int    3        0      0
+0x21403029   -      int    3        0      0
+0x2140302a   -      int    3        0      0
+0x2140302b   -      int    3        0      0
+0x2140302c   -      int    3        0      0
+0x2140302d   -      int    3        0      0
+0x2140302f   -      int    3        0      0
+0x21403031   -      int    3        0      0
+0x21403033   -      int    3        0      0
+0x21403034   -      int    3        0      0
+0x21403035   -      int    3        0      0
+0x21403036   -      int    3        0      0
+0x21403037   -      int    3        0      0
+0x21403038   -      int    3        0      0
+0x21403039   -      int    3        0      0
+0x2140303a   -      int    3        0      0
+0x2140303b   -      int    3        0      0
+0x2140303c   -      int    3        0      0
+0x2140303d   -      int    3        0      0
+0x2140303e   -      int    3        0      0
+0x2140303f   -      int    3        0      0
+0x21403043   -      int    3        0      0
+0x21403044   -      int    3        0      0
+0x21403045   -      int    3        0      0
+0x2140304e   -      int    3        0      0
+0x2140304f   -      int    3        0      0
+0x21403050   -      int    3        0      0
+0x21403053   -      int    3        0      0
+0x21403055   -      int    3        0      0
+0x21404002   -      int    3        0      0
+0x21404003   -      int    3        0      0
+0x21404004   -      int    3        0      0
+0x21404005   -      int    3        0      0
+0x21404006   -      int    3        0      0
+0x2140400c   -      int    3        0      0
+0x2140400d   -      int    3        0      0
+0x2140400f   -      int    3        0      0
+0x21404010   -      int    3        0      0
+0x21404012   -      int    3        0      0
+0x21404013   -      int    3        0      0
+0x21404014   -      int    3        0      0
+0x21404015   -      int    3        0      0
+0x21404016   -      int    3        0      0
+0x21404017   -      int    3        0      0
+0x21404018   -      int    3        0      0
+0x21404019   -      int    3        0      0
+0x2140401a   -      int    3        0      0
+0x2140401b   -      int    3        0      0
+0x2140401c   -      int    3        0      0
+0x2140401d   -      int    3        0      0
+0x2140401e   -      int    3        0      0
+0x2140401f   -      int    3        0      0
+0x21404020   -      int    3        0      0
+0x21404021   -      int    3        0      0
+0x21404022   -      int    3        0      0
+0x21404036   -      int    3        0      0
+0x21404038   -      int    3        0      0
+0x21404039   -      int    3        0      0
+0x2140403b   -      int    3        0      0
+0x2140403c   -      int    3        0      0
+0x2140403d   -      int    3        0      0
+0x21404041   -      int    3        0      0
+0x21404042   -      int    3        0      0
+0x21404043   -      int    3        0      0
+0x21404044   -      int    3        0      0
+0x21404045   -      int    3        0      0
+0x21404054   -      int    3        0      0
+0x21404055   -      int    3        0      0
+0x21404056   -      int    3        0      0
+0x21404057   -      int    3        0      0
+0x21404058   -      int    3        0      0
+0x21404059   -      int    3        0      0
+0x2140405a   -      int    3        0      0
+0x2140405b   -      int    3        0      0
+0x2140405c   -      int    3        0      0
+0x2140405d   -      int    3        0      0
+0x21404060   -      int    3        0      0
+0x21404061   -      int    3        0      0
+0x21404062   -      int    3        0      0
+0x21404063   -      int    3        0      0
+0x21404064   -      int    3        0      0
+0x21404065   -      int    3        0      0
+0x21404066   -      int    3        0      0
+0x21404067   -      int    3        0      0
+0x21404068   -      int    3        0      0
+0x21404069   -      int    3        0      0
+0x2140406b   -      int    3        0      0
+0x2140406c   -      int    3        0      0
+0x2140406d   -      int    3        0      0
+0x2140406e   -      int    3        0      0
+0x2140406f   -      int    3        0      0
+0x21404070   -      int    3        0      0
+0x21404071   -      int    3        0      0
+0x21404072   -      int    3        0      0
+0x21404073   -      int    3        0      0
+0x21404074   -      int    3        0      0
+0x21404075   -      int    3        0      0
+0x21404076   -      int    3        0      0
+0x21404077   -      int    3        0      0
+0x2140407d   -      int    3        0      0
+0x2140407e   -      int    3        0      0
+0x21404080   -      int    3        0      0
+0x21404081   -      int    3        0      0
+0x21404082   -      int    3        0      0
+0x21404083   -      int    3        0      0
+0x21404084   -      int    3        0      0
+0x21404085   -      int    3        0      0
+0x21404086   -      int    3        0      0
+0x21404087   -      int    3        0      0
+0x21404088   -      int    3        0      0
+0x21404089   -      int    3        0      0
+0x2140408a   -      int    3        0      0
+0x2140408b   -      int    3        0      0
+0x2140408c   -      int    3        0      0
+0x2140408d   -      int    3        0      0
+0x2140408e   -      int    3        0      0
+0x2140408f   -      int    0        0      0
+0x21404090   -      int    3        0      0
+0x21404091   -      int    3        0      0
+0x21404092   -      int    3        0      0
+0x21404093   -      int    3        0      0
+0x21404095   -      int    3        0      0
+0x21404096   -      int    3        0      0
+0x21404501   -      int    3        0      0
+0x21404502   -      int    3        0      0
+0x21404506   -      int    3        0      0
+0x21404507   -      int    3        0      0
+0x21404508   -      int    3        0      0
+0x2140450a   -      int    3        0      0
+0x2140450b   -      int    3        0      0
+0x2140450c   -      int    3        0      0
+0x2140450d   -      int    3        0      0
+0x2140450f   -      int    3        0      0
+0x21404510   -      int    3        0      0
+0x21404512   -      int    3        0      0
+0x21404513   -      int    3        0      0
+0x21404514   -      int    3        0      0
+0x21404515   -      int    3        0      0
+0x21404516   -      int    3        0      0
+0x21404517   -      int    3        0      0
+0x21404518   -      int    3        0      0
+0x2140451b   -      int    3        0      0
+0x2140451c   -      int    3        0      0
+0x2140451d   -      int    3        0      0
+0x21404524   -      int    3        0      0
+0x21404525   -      int    3        0      0
+0x21404526   -      int    3        0      0
+0x21404527   -      int    3        0      0
+0x21404528   -      int    3        0      0
+0x21404529   -      int    3        0      0
+0x2140452a   -      int    3        0      0
+0x2140452b   -      int    3        0      0
+0x2140452c   -      int    3        0      0
+0x2140452d   -      int    3        0      0
+0x2140452e   -      int    3        0      0
+0x2140452f   -      int    3        0      0
+0x21404530   -      int    3        0      0
+0x21404531   -      int    3        0      0
+0x21404532   -      int    3        0      0
+0x2140453e   -      int    3        0      0
+0x21405000   -      int    3        0      0
+0x21405001   -      int    3        0      0
+0x21405004   -      int    3        0      0
+0x21405005   -      int    3        0      0
+0x21405006   -      int    3        0      0
+0x21405007   -      int    3        0      0
+0x21405008   -      int    3        0      0
+0x21405009   -      int    3        0      0
+0x2140500a   -      int    3        0      0
+0x2140500b   -      int    3        0      0
+0x2140500c   -      int    3        0      0
+0x2140500d   -      int    3        0      0
+0x2140500e   -      int    3        0      0
+0x2140500f   -      int    3        0      0
+0x21405010   -      int    3        0      0
+0x21405011   -      int    3        0      0
+0x21405012   -      int    3        0      0
+0x21405013   -      int    3        0      0
+0x21405014   -      int    3        0      0
+0x21405015   -      int    3        0      0
+0x21405016   -      int    3        0      0
+0x21405017   -      int    3        0      0
+0x21405018   -      int    3        0      0
+0x21405019   -      int    3        0      0
+0x2140501a   -      int    3        0      0
+0x2140501b   -      int    3        0      0
+0x2140501c   -      int    3        0      0
+0x2140501d   -      int    3        0      0
+0x2140501e   -      int    3        0      0
+0x2140501f   -      int    3        0      0
+0x21405020   -      int    3        0      0
+0x21405026   -      int    3        0      0
+0x2140502f   -      int    3        0      0
+0x21405030   -      int    3        0      0
+0x21405031   -      int    3        0      0
+0x21405032   -      int    3        0      0
+0x21405033   -      int    3        0      0
+0x21405036   -      int    3        0      0
+0x21405037   -      int    3        0      0
+0x21405039   -      int    3        0      0
+0x2140503a   -      int    3        0      0
+0x2140503b   -      int    3        0      0
+0x2140503d   -      int    3        0      0
+0x2140503e   -      int    3        0      0
+0x2140503f   -      int    3        0      0
+0x21405040   -      int    3        0      0
+0x21405041   -      int    3        0      0
+0x21405042   -      int    3        0      0
+0x21405043   -      int    3        0      0
+0x21405044   -      int    3        0      0
+0x21405045   -      int    3        0      0
+0x21405046   -      int    3        0      0
+0x21405047   -      int    3        0      0
+0x21405048   -      int    3        0      0
+0x21405049   -      int    3        0      0
+0x2140504a   -      int    3        0      0
+0x2140504b   -      int    3        0      0
+0x2140504c   -      int    3        0      0
+0x2140504d   -      int    3        0      0
+0x2140504e   -      int    3        0      0
+0x2140504f   -      int    3        0      0
+0x21405050   -      int    3        0      0
+0x21405051   -      int    3        0      0
+0x21405052   -      int    3        0      0
+0x21405053   -      int    3        0      0
+0x21405054   -      int    3        0      0
+0x21405055   -      int    3        0      0
+0x21405057   -      int    3        0      0
+0x21405061   -      int    3        0      0
+0x21405063   -      int    3        0      0
+0x21405064   -      int    3        0      0
+0x2140506d   -      int    3        0      0
+0x21407105   -      int    0        0      0
+0x21408000   -      int    3        0      0
+0x21408001   -      int    3        0      0
+0x21408007   -      int    3        0      0
+0x21408008   -      int    3        0      0
+0x21408009   -      int    3        0      0
+0x2140800d   -      int    3        0      0
+0x21408011   -      int    3        0      0
+0x21408012   -      int    3        0      0
+0x21408013   -      int    3        0      0
+0x21408017   -      int    3        0      0
+0x21408018   -      int    3        0      3
+0x21408019   -      int    3        0      0
+0x2140801a   -      int    3        0      0
+0x2140801b   -      int    3        0      0
+0x2140801c   -      int    3        0      0
+0x2140801d   -      int    3        0      0
+0x2140801e   -      int    3        0      0
+0x2140801f   -      int    3        0      0
+0x21408020   -      int    3        0      0
+0x21408021   -      int    3        0      0
+0x21408022   -      int    3        0      0
+0x21408023   -      int    3        0      0
+0x21408024   -      int    3        0      0
+0x21408025   -      int    3        0      0
+0x21409001   -      int    3        0      0
+0x21409002   -      int    3        0      0
+0x21409004   -      int    3        0      0
+0x21409005   -      int    3        0      0
+0x21409006   -      int    3        0      0
+0x21409007   -      int    3        0      0
+0x2140900c   -      int    3        0      0
+0x2140900d   -      int    3        0      0
+0x2140900e   -      int    3        0      0
+0x2140900f   -      int    3        0      0
+0x21409010   -      int    3        0      0
+0x21409011   -      int    0        0      0
+0x21409012   -      int    3        0      0
+0x21409013   -      int    3        0      0
+0x21409016   -      int    3        0      0
+0x21409017   -      int    3        0      0
+0x21409018   -      int    3        0      0
+0x21409019   -      int    3        0      0
+0x2140901a   -      int    3        0      0
+0x2140901b   -      int    3        0      0
+0x2140901c   -      int    3        0      0
+0x21409020   -      int    3        0      0
+0x21409021   -      int    3        0      0
+0x21409022   -      int    3        0      0
+0x21409023   -      int    3        0      0
+0x21409024   -      int    3        0      0
+0x21409025   -      int    3        0      0
+0x21409026   -      int    3        0      0
+0x21409027   -      int    3        0      0
+0x21409028   -      int    3        0      0
+0x21409029   -      int    3        0      0
+0x2140902a   -      int    3        0      0
+0x2140902b   -      int    3        0      0
+0x2140902c   -      int    3        0      0
+0x2140902d   -      int    3        0      0
+0x2140902e   -      int    3        0      0
+0x2140902f   -      int    3        0      0
+0x21409030   -      int    3        0      0
+0x21409032   -      int    3        0      0
+0x21409045   -      int    3        0      0
+0x21409046   -      int    3        0      0
+0x21409049   -      int    3        0      0
+0x2140904a   -      int    3        0      0
+0x2140904b   -      int    3        0      0
+0x2140904c   -      int    3        0      0
+0x2140904d   -      int    3        0      0
+0x2140904e   -      int    3        0      0
+0x2140904f   -      int    3        0      0
+0x21409050   -      int    3        0      0
+0x21409051   -      int    3        0      0
+0x21409054   -      int    3        0      0
+0x2140a000   -      int    3        0      0
+0x2140a007   -      int    3        0      0
+0x2140a009   -      int    3        0      3
+0x2140a010   -      int    3        0      8
+0x2140a012   -      int    3        0      0
+0x2140a013   -      int    3        0      0
+0x2140a014   -      int    3        0      0
+0x2140a015   -      int    3        0      0
+0x2140a016   -      int    3        0      0
+0x2140a017   -      int    3        0      0
+0x2140a018   -      int    3        0      0
+0x2140a019   -      int    3        0      0
+0x2140a020   -      int    3        0      0
+0x2140a021   -      int    3        0      0
+0x2140a022   -      int    3        0      0
+0x2140a023   -      int    3        0      0
+0x2140a024   -      int    3        0      0
+0x2140a025   -      int    3        0      0
+0x2140a026   -      int    3        0      0
+0x2140a027   -      int    3        0      0
+0x2140a028   -      int    3        0      0
+0x2140a030   -      int    3        0      0
+0x2140a031   -      int    3        0      0
+0x2140a032   -      int    3        0      0
+0x2140a033   -      int    3        0      0
+0x2140a034   -      int    3        0      0
+0x2140a035   -      int    3        0      0
+0x2140a036   -      int    3        0      2
+0x2140a037   -      int    3        0      0
+0x2140a038   -      int    3        0      0
+0x2140a040   -      int    3        0      0
+0x2140a043   -      int    3        0      0
+0x2140a045   -      int    3        0      0
+0x2140a046   -      int    3        0      0
+0x2140a048   -      int    3        0      1
+0x2140a049   -      int    3        0      0
+0x2140a051   -      int    3        0      0
+0x2140a052   -      int    3        0      0
+0x2140a054   -      int    3        0      0
+0x2140a055   -      int    3        0      0
+0x2140a056   -      int    3        0      0
+0x2140a057   -      int    3        0      0
+0x2140a058   -      int    3        0      0
+0x2140a059   -      int    3        0      0
+0x2140a060   -      int    3        0      0
+0x2140a061   -      int    3        0      0
+0x2140a063   -      int    3        0      0
+0x2140a064   -      int    3        0      0
+0x2140a065   -      int    3        0      0
+0x2140a066   -      int    3        0      0
+0x2140a067   -      int    3        0      0
+0x2140a068   -      int    3        0      0
+0x2140a069   -      int    3        0      0
+0x2140a073   -      int    3        0      0
+0x2140a074   -      int    3        0      0
+0x2140a075   -      int    3        0      0
+0x2140a076   -      int    3        0      0
+0x2140a078   -      int    3        0      0
+0x2140a079   -      int    3        0      0
+0x2140a080   -      int    3        0      0
+0x2140a081   -      int    3        0      0
+0x2140a082   -      int    3        0      0
+0x2140a083   -      int    3        0      0
+0x2140a084   -      int    3        0      0
+0x2140a086   -      int    3        0      0
+0x2140a087   -      int    3        0      0
+0x2140a091   -      int    3        0      0
+0x2140a093   -      int    3        0      0
+0x2140a094   -      int    3        0      0
+0x2140a095   -      int    3        0      0
+0x2140a096   -      int    3        0      0
+0x2140a097   -      int    3        0      0
+0x2140a099   -      int    3        0      0
+0x2140a100   -      int    3        0      0
+0x2140a101   -      int    3        0      0
+0x2140a102   -      int    3        0      0
+0x2140a103   -      int    3        0      0
+0x2140a104   -      int    3        0      0
+0x2140a105   -      int    3        0      0
+0x2140a106   -      int    3        0      0
+0x2140a107   -      int    3        0      0
+0x2140a108   -      int    3        0      0
+0x2140a109   -      int    3        0      0
+0x2140a110   -      int    3        0      0
+0x2140a111   -      int    3        0      0
+0x2140a112   -      int    3        0      0
+0x2140a115   -      int    3        0      0
+0x2140a118   -      int    3        0      0
+0x2140a119   -      int    3        0      0
+0x2140a120   -      int    3        0      0
+0x2140a123   -      int    3        0      1
+0x2140a124   -      int    3        0      0
+0x2140a125   -      int    3        0      0
+0x2140a127   -      int    3        0      0
+0x2140a128   -      int    3        0      0
+0x2140a129   -      int    3        0      0
+0x2140a130   -      int    0        0      0
+0x2140a132   -      int    3        0      0
+0x2140a133   -      int    3        0      0
+0x2140a135   -      int    3        0      0
+0x2140a136   -      int    0        0      0
+0x2140a137   -      int    3        0      0
+0x2140a138   -      int    3        0      0
+0x2140a139   -      int    3        0      0
+0x2140a140   -      int    0        0      1
+0x2140a141   -      int    3        0      0
+0x2140a142   -      int    3        0      0
+0x2140a143   -      int    0        0      0
+0x2140a144   -      int    3        0      0
+0x2140a145   -      int    3        0      0
+0x2140a146   -      int    3        0      0
+0x2140a147   -      int    3        0      0
+0x2140a148   -      int    3        0      0
+0x2140a149   -      int    3        0      0
+0x2140a150   -      int    3        0      0
+0x2140a154   -      int    3        0      0
+0x2140a155   -      int    3        0      0
+0x2140a156   -      int    3        0      0
+0x2140a157   -      int    3        0      0
+0x2140a158   -      int    3        0      0
+0x2140a162   -      int    3        0      0
+0x2140a163   -      int    3        0      0
+0x2140a164   -      int    3        0      0
+0x2140a165   -      int    3        0      0
+0x2140a166   -      int    3        0      0
+0x2140a167   -      int    3        0      0
+0x2140a168   -      int    0        0      0
+0x2140a169   -      int    3        0      0
+0x2140a170   -      int    3        0      0
+0x2140a171   -      int    3        0      0
+0x2140a172   -      int    3        0      0
+0x2140a173   -      int    3        0      0
+0x2140a174   -      int    3        0      0
+0x2140a175   -      int    3        0      0
+0x2140a176   -      int    3        0      0
+0x2140a177   -      int    3        0      0
+0x2140a178   -      int    3        0      0
+0x2140a179   -      int    3        0      0
+0x2140a180   -      int    3        0      0
+0x2140a181   -      int    3        0      0
+0x2140a182   -      int    3        0      0
+0x2140a183   -      int    3        0      0
+0x2140a184   -      int    3        0      0
+0x2140a185   -      int    3        0      0
+0x2140a186   -      int    3        0      0
+0x2140a187   -      int    3        0      0
+0x2140a188   -      int    3        0      0
+0x2140a189   -      int    3        0      0
+0x2140a190   -      int    3        0      0
+0x2140a191   -      int    3        0      0
+0x2140a192   -      int    3        0      0
+0x2140a193   -      int    3        0      0
+0x2140a194   -      int    3        0      0
+0x2140a195   -      int    3        0      0
+0x2140a196   -      int    3        0      0
+0x2140a197   -      int    3        0      0
+0x2140a198   -      int    3        0      0
+0x2140a199   -      int    3        0      0
+0x2140a200   -      int    3        0      0
+0x2140a201   -      int    3        0      0
+0x2140a203   -      int    3        0      0
+0x2140a204   -      int    3        0      0
+0x2140a206   -      int    3        0      0
+0x2140a207   -      int    3        0      0
+0x2140a208   -      int    3        0      0
+0x2140a209   -      int    3        0      0
+0x2140a210   -      int    3        0      0
+0x2140a211   -      int    3        0      0
+0x2140a212   -      int    3        0      0
+0x2140a213   -      int    3        0      0
+0x2140a214   -      int    3        0      0
+0x2140a215   -      int    3        0      0
+0x2140a216   -      int    3        0      0
+0x2140a217   -      int    3        0      0
+0x2140a218   -      int    3        0      0
+0x2140a219   -      int    3        0      0
+0x2140a220   -      int    3        0      0
+0x2140a222   -      int    3        0      0
+0x2140a223   -      int    3        0      0
+0x2140a224   -      int    3        0      0
+0x2140a225   -      int    3        0      0
+0x2140a226   -      int    3        0      0
+0x2140a227   -      int    3        0      0
+0x2140a228   -      int    3        0      0
+0x2140a229   -      int    3        0      0
+0x2140a230   -      int    3        0      0
+0x2140a231   -      int    3        0      0
+0x2140a232   -      int    3        0      0
+0x2140a233   -      int    3        0      0
+0x2140a234   -      int    3        0      0
+0x2140a235   -      int    3        0      0
+0x2140a236   -      int    3        0      0
+0x2140a237   -      int    3        0      0
+0x2140a238   -      int    3        0      0
+0x2140a239   -      int    3        0      0
+0x2140a240   -      int    3        0      0
+0x2140a241   -      int    3        0      0
+0x2140a242   -      int    3        0      0
+0x2140a243   -      int    3        0      0
+0x2140a245   -      int    3        0      0
+0x2140a246   -      int    3        0      0
+0x2140a247   -      int    3        0      0
+0x2140a248   -      int    3        0      0
+0x2140a249   -      int    3        0      0
+0x2140a250   -      int    3        0      0
+0x2140a251   -      int    3        0      0
+0x2140a252   -      int    3        0      0
+0x2140a253   -      int    3        0      0
+0x2140a254   -      int    3        0      0
+0x2140a255   -      int    3        0      0
+0x2140a256   -      int    3        0      0
+0x2140a257   -      int    3        0      0
+0x2140a260   -      int    0        0      0
+0x2140a261   -      int    3        0      0
+0x2140a262   -      int    3        0      0
+0x2140a263   -      int    3        0      0
+0x2140a264   -      int    3        0      0
+0x2140a265   -      int    3        0      0
+0x2140a266   -      int    3        0      0
+0x2140a267   -      int    3        0      0
+0x2140a268   -      int    3        0      0
+0x2140a269   -      int    3        0      0
+0x2140a270   -      int    3        0      0
+0x2140a271   -      int    3        0      0
+0x2140a272   -      int    3        0      0
+0x2140a273   -      int    3        0      0
+0x2140a276   -      int    3        0      0
+0x2140a277   -      int    3        0      0
+0x2140a278   -      int    3        0      0
+0x2140a279   -      int    3        0      0
+0x2140a280   -      int    3        0      0
+0x2140a281   -      int    3        0      0
+0x2140a282   -      int    3        0      0
+0x2140a283   -      int    3        0      0
+0x2140a284   -      int    3        0      0
+0x2140a285   -      int    3        0      0
+0x2140a286   -      int    3        0      0
+0x2140a287   -      int    3        0      0
+0x2140a288   -      int    3        0      0
+0x2140a289   -      int    3        0      0
+0x2140a290   -      int    3        0      0
+0x2140a291   -      int    3        0      0
+0x2140a292   -      int    3        0      0
+0x2140a293   -      int    3        0      0
+0x2140a294   -      int    3        0      0
+0x2140a295   -      int    3        0      0
+0x2140a296   -      int    3        0      0
+0x2140a297   -      int    3        0      0
+0x2140a298   -      int    3        0      0
+0x2140a299   -      int    3        0      0
+0x2140a300   -      int    3        0      0
+0x2140a301   -      int    3        0      0
+0x2140a302   -      int    3        0      0
+0x2140a303   -      int    3        0      0
+0x2140a304   -      int    0        0      0
+0x2140a305   -      int    3        0      0
+0x2140a306   -      int    3        0      0
+0x2140a307   -      int    3        0      0
+0x2140a308   -      int    3        0      0
+0x2140a309   -      int    3        0      0
+0x2140a310   -      int    3        0      0
+0x2140a311   -      int    3        0      0
+0x2140a312   -      int    3        0      0
+0x2140a313   -      int    3        0      0
+0x2140a314   -      int    3        0      0
+0x2140a316   -      int    3        0      0
+0x2140a317   -      int    3        0      0
+0x2140a320   -      int    3        0      0
+0x2140a321   -      int    3        0      0
+0x2140a322   -      int    3        0      0
+0x2140a323   -      int    3        0      0
+0x2140a324   -      int    3        0      0
+0x2140a325   -      int    3        0      0
+0x2140a326   -      int    3        0      0
+0x2140a327   -      int    3        0      0
+0x2140a328   -      int    3        0      0
+0x2140a329   -      int    3        0      0
+0x2140a330   -      int    3        0      0
+0x2140a332   -      int    3        0      0
+0x2140a333   -      int    3        0      0
+0x2140a334   -      int    3        0      0
+0x2140a335   -      int    3        0      0
+0x2140a336   -      int    3        0      0
+0x2140a337   -      int    3        0      0
+0x2140a338   -      int    3        0      0
+0x2140a339   -      int    3        0      0
+0x2140a340   -      int    3        0      0
+0x2140a341   -      int    3        0      0
+0x2140a342   -      int    3        0      0
+0x2140a343   -      int    3        0      0
+0x2140a344   -      int    3        0      0
+0x2140a345   -      int    0        0      2
+0x2140a346   -      int    3        0      0
+0x2140a351   -      int    3        0      0
+0x2140a352   -      int    3        0      0
+0x2140a356   -      int    3        0      0
+0x2140a358   -      int    3        0      0
+0x2140a362   -      int    3        0      0
+0x2140a367   -      int    3        0      0
+0x2140a368   -      int    3        0      0
+0x2140a369   -      int    3        0      0
+0x2140a370   -      int    3        0      0
+0x2140a371   -      int    3        0      0
+0x2140a372   -      int    3        0      0
+0x2140a373   -      int    3        0      0
+0x2140a374   -      int    3        0      0
+0x2140a375   -      int    3        0      0
+0x2140a376   -      int    3        0      1
+0x2140a379   -      int    3        0      0
+0x2140a381   -      int    3        0      0
+0x2140a382   -      int    3        0      0
+0x2140a383   -      int    3        0      0
+0x2140a384   -      int    3        0      0
+0x2140a385   -      int    3        0      0
+0x2140a386   -      int    3        0      0
+0x2140a387   -      int    3        0      0
+0x2140a388   -      int    3        0      0
+0x2140a389   -      int    3        0      0
+0x2140a390   -      int    3        0      0
+0x2140a391   -      int    3        0      0
+0x2140a392   -      int    3        0      0
+0x2140a393   -      int    3        0      0
+0x2140a394   -      int    3        0      0
+0x2140a395   -      int    3        0      0
+0x2140a396   -      int    3        0      0
+0x2140a397   -      int    3        0      0
+0x2140a398   -      int    3        0      0
+0x2140a399   -      int    3        0      0
+0x2140a400   -      int    3        0      0
+0x2140a401   -      int    3        0      0
+0x2140a402   -      int    3        0      0
+0x2140a403   -      int    3        0      0
+0x2140a404   -      int    3        0      0
+0x2140a405   -      int    3        0      0
+0x2140a406   -      int    3        0      0
+0x2140a407   -      int    3        0      0
+0x2140a408   -      int    3        0      0
+0x2140a409   -      int    3        0      0
+0x2140a410   -      int    3        0      0
+0x2140a411   -      int    3        0      0
+0x2140a412   -      int    3        0      0
+0x2140a413   -      int    3        0      0
+0x2140a417   -      int    3        0      0
+0x2140a420   -      int    3        0      0
+0x2140a422   -      int    3        0      0
+0x2140a423   -      int    3        0      0
+0x2140a424   -      int    3        0      0
+0x2140a425   -      int    3        0      0
+0x2140a426   -      int    3        0      0
+0x2140a427   -      int    3        0      0
+0x2140a429   -      int    3        0      0
+0x2140a430   -      int    3        0      0
+0x2140a431   -      int    3        0      0
+0x2140a432   -      int    3        0      0
+0x2140a433   -      int    3        0      0
+0x2140a434   -      int    3        0      0
+0x2140a435   -      int    3        0      0
+0x2140a436   -      int    3        0      0
+0x2140a437   -      int    3        0      0
+0x2140a438   -      int    3        0      0
+0x2140a439   -      int    3        0      0
+0x2140a440   -      int    3        0      0
+0x2140a441   -      int    3        0      0
+0x2140a442   -      int    3        0      0
+0x2140a443   -      int    3        0      0
+0x2140a444   -      int    3        0      0
+0x2140a445   -      int    3        0      0
+0x2140a446   -      int    3        0      0
+0x2140a447   -      int    3        0      0
+0x2140a448   -      int    3        0      0
+0x2140a449   -      int    3        0      0
+0x2140a450   -      int    3        0      0
+0x2140a451   -      int    3        0      0
+0x2140a452   -      int    3        0      0
+0x2140a453   -      int    3        0      0
+0x2140a454   -      int    3        0      0
+0x2140a455   -      int    3        0      0
+0x2140a460   -      int    3        0      0
+0x2140a461   -      int    3        0      0
+0x2140a462   -      int    3        0      0
+0x2140a463   -      int    3        0      0
+0x2140a464   -      int    3        0      0
+0x2140a465   -      int    3        0      0
+0x2140a466   -      int    3        0      0
+0x2140a467   -      int    3        0      0
+0x2140a468   -      int    3        0      0
+0x2140a469   -      int    3        0      0
+0x2140a470   -      int    3        0      0
+0x2140a471   -      int    3        0      0
+0x2140a472   -      int    3        0      0
+0x2140a473   -      int    3        0      0
+0x2140a474   -      int    3        0      0
+0x2140a475   -      int    3        0      0
+0x2140a476   -      int    3        0      0
+0x2140a477   -      int    3        0      0
+0x2140a478   -      int    3        0      0
+0x2140a479   -      int    3        0      0
+0x2140a481   -      int    3        0      0
+0x2140a482   -      int    3        0      0
+0x2140a483   -      int    3        0      0
+0x2140a484   -      int    3        0      0
+0x2140a485   -      int    3        0      0
+0x2140a486   -      int    3        0      0
+0x2140a487   -      int    3        0      0
+0x2140a488   -      int    3        0      0
+0x2140a489   -      int    3        0      0
+0x2140a490   -      int    3        0      0
+0x2140a491   -      int    3        0      0
+0x2140a492   -      int    3        0      0
+0x2140a493   -      int    3        0      0
+0x2140a494   -      int    3        0      0
+0x2140a495   -      int    3        0      0
+0x2140a496   -      int    3        0      0
+0x2140a497   -      int    3        0      0
+0x2140a498   -      int    3        0      0
+0x2140a499   -      int    3        0      0
+0x2140a500   -      int    3        0      0
+0x2140a501   -      int    3        0      0
+0x2140a502   -      int    3        0      0
+0x2140a503   -      int    3        0      0
+0x2140a504   -      int    3        0      0
+0x2140a505   -      int    3        0      0
+0x2140a506   -      int    3        0      0
+0x2140a507   -      int    3        0      0
+0x2140a508   -      int    3        0      0
+0x2140a509   -      int    3        0      0
+0x2140a510   -      int    3        0      0
+0x2140a511   -      int    3        0      0
+0x2140a512   -      int    3        0      0
+0x2140a513   -      int    3        0      0
+0x2140a514   -      int    3        0      0
+0x2140a515   -      int    3        0      0
+0x2140a516   -      int    3        0      0
+0x2140a517   -      int    3        0      0
+0x2140a518   -      int    3        0      0
+0x2140a519   -      int    3        0      0
+0x2140a520   -      int    3        0      0
+0x2140a521   -      int    3        0      0
+0x2140a522   -      int    3        0      0
+0x2140a523   -      int    3        0      0
+0x2140a524   -      int    3        0      0
+0x2140a525   -      int    3        0      0
+0x2140a526   -      int    3        0      0
+0x2140a527   -      int    3        0      0
+0x2140a528   -      int    3        0      0
+0x2140a529   -      int    3        0      0
+0x2140a530   -      int    3        0      0
+0x2140a531   -      int    3        0      0
+0x2140a532   -      int    3        0      0
+0x2140a533   -      int    3        0      0
+0x2140a534   -      int    3        0      0
+0x2140a535   -      int    3        0      0
+0x2140a536   -      int    3        0      0
+0x2140a537   -      int    3        0      0
+0x2140a538   -      int    3        0      0
+0x2140a539   -      int    3        0      0
+0x2140a541   -      int    3        0      0
+0x2140a542   -      int    3        0      0
+0x2140a543   -      int    3        0      0
+0x2140a544   -      int    3        0      0
+0x2140a545   -      int    3        0      0
+0x2140a546   -      int    3        0      0
+0x2140a547   -      int    3        0      0
+0x2140a548   -      int    3        0      0
+0x2140a549   -      int    3        0      0
+0x2140a550   -      int    3        0      0
+0x2140a551   -      int    3        0      0
+0x2140a552   -      int    3        0      0
+0x2140a553   -      int    3        0      0
+0x2140a554   -      int    3        0      1
+0x2140a555   -      int    3        0      0
+0x2140a557   -      int    3        0      1
+0x2140a558   -      int    3        0      1
+0x2140a559   -      int    3        0      1
+0x2140a561   -      int    3        0      2
+0x2140a562   -      int    3        0      0
+0x2140a563   -      int    3        0      0
+0x2140a565   -      int    0        0      0
+0x2140a566   -      int    3        0      0
+0x2140a567   -      int    3        0      0
+0x2140a568   -      int    0        0      0
+0x2140a569   -      int    0        0      0
+0x2140a570   -      int    3        0      0
+0x2140a571   -      int    3        0      0
+0x2140a572   -      int    3        0      0
+0x2140a573   -      int    0        0      0
+0x2140a574   -      int    3        0      2
+0x2140a575   -      int    3        0      0
+0x2140a576   -      int    3        0      0
+0x2140a577   -      int    0        0      0
+0x2140a578   -      int    0        0      0
+0x2140a579   -      int    0        0      0
+0x2140a580   -      int    3        0      0
+0x2140a581   -      int    3        0      0
+0x2140a582   -      int    3        0      0
+0x2140a583   -      int    3        0      0
+0x2140a584   -      int    3        0      0
+0x2140a585   -      int    3        0      0
+0x2140a586   -      int    3        0      0
+0x2140a587   -      int    3        0      0
+0x2140a588   -      int    3        0      0
+0x2140a589   -      int    3        0      0
+0x2140a590   -      int    3        0      0
+0x2140a591   -      int    3        0      0
+0x2140a592   -      int    3        0      0
+0x2140a593   -      int    0        0      0
+0x2140a595   -      int    3        0      1
+0x2140a596   -      int    3        0      0
+0x2140a597   -      int    3        0      0
+0x2140a598   -      int    3        0      0
+0x2140a599   -      int    3        0      0
+0x2140a600   -      int    3        0      0
+0x2140a601   -      int    3        0      0
+0x2140a602   -      int    3        0      0
+0x2140a603   -      int    3        0      0
+0x2140a604   -      int    3        0      0
+0x2140a608   -      int    3        0      0
+0x2140a609   -      int    3        0      0
+0x2140a610   -      int    3        0      0
+0x2140a611   -      int    3        0      0
+0x2140a612   -      int    3        0      0
+0x2140a613   -      int    3        0      0
+0x2140a614   -      int    3        0      0
+0x2140a615   -      int    3        0      0
+0x2140a616   -      int    3        0      0
+0x2140a617   -      int    3        0      0
+0x2140a618   -      int    3        0      0
+0x2140a619   -      int    3        0      0
+0x2140a620   -      int    3        0      0
+0x2140a621   -      int    3        0      0
+0x2140a622   -      int    3        0      0
+0x2140a626   -      int    3        0      0
+0x2140a627   -      int    3        0      0
+0x2140a628   -      int    3        0      0
+0x2140a62a   -      int    3        0      5
+0x2140a62b   -      int    3        0      0
+0x2140a62d   -      int    3        0      0
+0x2140a632   -      int    3        0      0
+0x2140a633   -      int    3        0      0
+0x2140a636   -      int    3        0      0
+0x2140a637   -      int    3        0      0
+0x2140a638   -      int    3        0      0
+0x2140a639   -      int    3        0      0
+0x2140a647   -      int    3        0      0
+0x2140a648   -      int    3        0      0
+0x2140a652   -      int    3        0      0
+0x2140a654   -      int    3        0      0
+0x2140a658   -      int    3        0      0
+0x2140a663   -      int    3        0      1
+0x2140a664   -      int    3        0      0
+0x2140a666   -      int    3        0      0
+0x2140a669   -      int    3        0      511
+0x2140a66a   -      int    3        0      0
+0x2140a66d   -      int    3        0      0
+0x2140a66e   -      int    3        0      0
+0x2140a670   -      int    3        0      0
+0x2140a672   -      int    3        0      0
+0x2140a674   -      int    3        0      1
+0x2140a676   -      int    3        0      0
+0x2140a67b   -      int    0        0      0
+0x2140a67c   -      int    0        0      0
+0x2140a67d   -      int    3        0      0
+0x2140a67f   -      int    3        0      0
+0x2140a680   -      int    3        0      0
+0x2140a681   -      int    3        0      4
+0x2140a684   -      int    3        0      0
+0x2140a685   -      int    3        0      0
+0x2140a686   -      int    3        0      0
+0x2140a687   -      int    3        0      0
+0x2140a688   -      int    3        0      0
+0x2140a689   -      int    3        0      0
+0x2140a68a   -      int    3        0      0
+0x2140a68b   -      int    3        0      0
+0x2140a68c   -      int    3        0      0
+0x2140a68e   -      int    3        0      0
+0x2140a691   -      int    3        0      0
+0x2140a692   -      int    3        0      0
+0x2140a695   -      int    3        0      0
+0x2140a697   -      int    3        0      0
+0x2140a698   -      int    3        0      0
+0x2140a69c   -      int    3        0      0
+0x2140a69d   -      int    3        0      0
+0x2140a69e   -      int    3        0      0
+0x2140a69f   -      int    3        0      0
+0x2140a6a0   -      int    3        0      0
+0x2140a6a4   -      int    3        0      0
+0x2140a6a5   -      int    3        0      -1
+0x2140a6a7   -      int    3        0      0
+0x2140a6a8   -      int    3        0      0
+0x2140a6ab   -      int    3        0      0
+0x2140a6b2   -      int    3        0      0
+0x2140a6b7   -      int    0        0      500.0
+0x2140a6b8   -      int    0        0      0
+0x2140a6bf   -      int    3        0      0
+0x2140a6c3   -      int    3        0      1
+0x2140a6c8   -      int    3        0      0
+0x2140a6c9   -      int    3        0      0
+0x2140a6ca   -      int    3        0      0
+0x2140a6d0   -      int    3        0      0
+0x2140a6f5   -      int    3        0      0
+0x2140a6f7   -      int    3        0      0
+0x2140a6f9   -      int    3        0      0
+0x2140a6ff   -      int    3        0      0
+0x2140a700   -      int    3        0      0
+0x2140a701   -      int    3        0      0
+0x2140a702   -      int    3        0      0
+0x2140a703   -      int    3        0      0
+0x2140a704   -      int    3        0      0
+0x2140a705   -      int    3        0      0
+0x2140a706   -      int    3        0      0
+0x2140a707   -      int    3        0      0
+0x2140a708   -      int    3        0      0
+0x2140a709   -      int    3        0      0
+0x2140a70a   -      int    3        0      0
+0x2140a70b   -      int    3        0      0
+0x2140a70c   -      int    3        0      0
+0x2140a70d   -      int    3        0      0
+0x2140a70e   -      int    3        0      0
+0x2140a70f   -      int    3        0      0
+0x2140a710   -      int    3        0      0
+0x2140a711   -      int    3        0      0
+0x2140a712   -      int    3        0      0
+0x2140a713   -      int    3        0      0
+0x2140a714   -      int    3        0      0
+0x2140a715   -      int    3        0      0
+0x2140a716   -      int    3        0      0
+0x2140a717   -      int    3        0      0
+0x2140a718   -      int    3        0      0
+0x2140a719   -      int    3        0      0
+0x2140a71b   -      int    3        0      0
+0x2140a71c   -      int    3        0      0
+0x2140a71d   -      int    3        0      0
+0x2140a71e   -      int    3        0      0
+0x2140a801   -      int    3        0      15
+0x2140a802   -      int    3        0      0
+0x2140a803   -      int    3        0      0
+0x2140a804   -      int    3        0      0
+0x2140a806   -      int    3        0      0
+0x2140a808   -      int    3        0      0
+0x2140a809   -      int    3        0      0
+0x2140a80a   -      int    0        0      0
+0x2140a80c   -      int    0        0      0
+0x2140a81a   -      int    3        0      2
+0x2140a81b   -      int    3        0      0
+0x2140a81c   -      int    3        0      0
+0x2140a81d   -      int    3        0      0
+0x2140a81e   -      int    3        0      0
+0x2140a81f   -      int    3        0      0
+0x2140a820   -      int    3        0      0
+0x2140a821   -      int    3        0      0
+0x2140a823   -      int    3        0      0
+0x2140a829   -      int    3        0      0
+0x2140a82a   -      int    3        0      0
+0x2140a82b   -      int    3        0      0
+0x2140a82c   -      int    3        0      0
+0x2140a82d   -      int    3        0      0
+0x2140a82e   -      int    3        0      0
+0x2140a82f   -      int    3        0      0
+0x2140a830   -      int    3        0      0
+0x2140a831   -      int    3        0      0
+0x2140a832   -      int    3        0      0
+0x2140a833   -      int    3        0      0
+0x2140a834   -      int    3        0      0
+0x2140a835   -      int    3        0      0
+0x2140a836   -      int    3        0      0
+0x2140a837   -      int    3        0      0
+0x2140a838   -      int    3        0      0
+0x2140a839   -      int    3        0      0
+0x2140a83a   -      int    3        0      0
+0x2140a83b   -      int    3        0      0
+0x2140a83c   -      int    3        0      0
+0x2140a83d   -      int    3        0      0
+0x2140a83e   -      int    3        0      0
+0x2140a83f   -      int    3        0      0
+0x2140a840   -      int    3        0      0
+0x2140a841   -      int    3        0      0
+0x2140a842   -      int    3        0      0
+0x2140a843   -      int    3        0      0
+0x2140a844   -      int    3        0      0
+0x2140a845   -      int    3        0      0
+0x2140a846   -      int    3        0      0
+0x2140a847   -      int    3        0      0
+0x2140a848   -      int    3        0      0
+0x2140a849   -      int    3        0      0
+0x2140a84a   -      int    3        0      0
+0x2140a84b   -      int    3        0      0
+0x2140a84c   -      int    3        0      0
+0x2140a84d   -      int    3        0      0
+0x2140a84e   -      int    3        0      0
+0x2140a84f   -      int    3        0      0
+0x2140a850   -      int    3        0      0
+0x2140a851   -      int    3        0      0
+0x2140a852   -      int    3        0      0
+0x2140a853   -      int    3        0      0
+0x2140a854   -      int    3        0      0
+0x2140a855   -      int    3        0      0
+0x2140a856   -      int    3        0      0
+0x2140a857   -      int    3        0      0
+0x2140a858   -      int    3        0      0
+0x2140a859   -      int    3        0      0
+0x2140a85a   -      int    3        0      0
+0x2140a85b   -      int    3        0      0
+0x2140a85c   -      int    3        0      0
+0x2140a85d   -      int    3        0      0
+0x2140a85e   -      int    3        0      0
+0x2140a85f   -      int    3        0      0
+0x2140a860   -      int    3        0      0
+0x2140a861   -      int    3        0      0
+0x2140a863   -      int    3        0      12
+0x2140a864   -      int    3        0      0
+0x2140a865   -      int    3        0      0
+0x2140a866   -      int    3        0      0
+0x2140a867   -      int    3        0      0
+0x2140a868   -      int    3        0      999
+0x2140a869   -      int    3        0      0
+0x2140a86a   -      int    3        0      0
+0x2140a86b   -      int    3        0      0
+0x2140a86c   -      int    3        0      0
+0x2140a86d   -      int    3        0      0
+0x2140a86e   -      int    3        0      0
+0x2140a86f   -      int    3        0      0
+0x2140a870   -      int    3        0      0
+0x2140a871   -      int    3        0      0
+0x2140a872   -      int    3        0      0
+0x2140a873   -      int    3        0      0
+0x2140a874   -      int    3        0      0
+0x2140a878   -      int    3        0      0
+0x2140a879   -      int    3        0      0
+0x2140a87a   -      int    3        0      0
+0x2140a87b   -      int    3        0      0
+0x2140a87c   -      int    3        0      0
+0x2140a87d   -      int    3        0      0
+0x2140a87e   -      int    3        0      0
+0x2140a87f   -      int    3        0      0
+0x2140a880   -      int    3        0      0
+0x2140a881   -      int    3        0      0
+0x2140a882   -      int    3        0      0
+0x2140a883   -      int    3        0      0
+0x2140a884   -      int    3        0      0
+0x2140a885   -      int    3        0      0
+0x2140a886   -      int    3        0      0
+0x2140a887   -      int    3        0      0
+0x2140a888   -      int    3        0      0
+0x2140a889   -      int    3        0      0
+0x2140a88a   -      int    3        0      0
+0x2140a88b   -      int    3        0      0
+0x2140a88c   -      int    3        0      0
+0x2140a891   -      int    3        0      0
+0x2140b000   -      int    3        0      0
+0x2140b003   -      int    3        0      0
+0x2140b006   -      int    3        0      0
+0x2140b007   -      int    3        0      0
+0x2140b00b   -      int    3        0      0
+0x2140b00c   -      int    3        0      0
+0x2140b00e   -      int    3        0      0
+0x2140b013   -      int    3        0      0
+0x2140b014   -      int    3        0      0
+0x2140b015   -      int    3        0      0
+0x2140b016   -      int    3        0      0
+0x2140b018   -      int    3        0      11
+0x2140b019   -      int    3        0      2
+0x2140b01e   -      int    3        0      0
+0x2140b01f   -      int    3        0      0
+0x2140b020   -      int    3        0      0
+0x2140b022   -      int    3        0      4
+0x2140b023   -      int    3        0      0
+0x2140b024   -      int    3        0      0
+0x2140b025   -      int    3        0      0
+0x2140b026   -      int    3        0      0
+0x2140b027   -      int    3        0      0
+0x2140b028   -      int    3        0      0
+0x2140b029   -      int    3        0      0
+0x2140b02a   -      int    3        0      0
+0x2140b02b   -      int    3        0      0
+0x2140b02c   -      int    3        0      0
+0x2140b02e   -      int    3        0      0
+0x2140b030   -      int    3        0      0
+0x2140b031   -      int    3        0      0
+0x2140b032   -      int    3        0      0
+0x2140b033   -      int    3        0      0
+0x2140b034   -      int    3        0      0
+0x2140b035   -      int    3        0      0
+0x2140b036   -      int    3        0      0
+0x2140b037   -      int    3        0      0
+0x2140b038   -      int    3        0      0
+0x2140b03a   -      int    3        0      0
+0x2140b03b   -      int    3        0      0
+0x2140b03f   -      int    3        0      0
+0x2140b040   -      int    3        0      0
+0x2140b043   -      int    3        0      2
+0x2140b046   -      int    0        0      0
+0x2140b047   -      int    0        0      0
+0x2140b048   -      int    0        0      0
+0x2140b04b   -      int    0        0      6
+0x2140b04c   -      int    0        0      10
+0x2140b04d   -      int    0        0      12
+0x2140b054   -      int    0        0      17
+0x2140b066   -      int    3        0      0
+0x2140b06a   -      int    3        0      255
+0x2140b06b   -      int    3        0      2
+0x2140b07e   -      int    3        0      0
+0x2140b07f   -      int    3        0      0
+0x2140b085   -      int    3        0      0
+0x2140b08e   -      int    3        0      15
+0x2140b08f   -      int    3        0      0
+0x2140b090   -      int    3        0      0
+0x2140b091   -      int    3        0      15
+0x2140b092   -      int    3        0      2
+0x2140b094   -      int    3        0      0
+0x2140b095   -      int    3        0      0
+0x2141901f   -      int[]  3        0      <array>
+0x21601022   -      float  3        0      0.0
+0x2160a624   -      float  3        0      0.0
+0x2160b001   -      float  3        0      0.0
+0x2170901e   -      bytes  3        0      [B@1966c38
+0x21709035   -      bytes  3        0      [B@88deb7f
+0x2170a011   -      bytes  3        0      [B@94fecaa
+0x2170a041   -      bytes  3        0      [B@2250552
+0x2170a042   -      bytes  3        0      [B@ce7023
+0x2170a044   -      bytes  3        0      [B@c229920
+0x2170a047   -      bytes  3        0      [B@42322d9
+0x2170a053   -      bytes  3        0      [B@37b3287
+0x2170a062   -      bytes  3        0      [B@90382c6
+0x2170a070   -      bytes  3        0      [B@617d6ab
+0x2170a071   -      bytes  3        0      [B@ed0b108
+0x2170a072   -      bytes  3        0      [B@8fc00a1
+0x2170a085   -      bytes  3        0      [B@52fcb77
+0x2170a088   -      bytes  3        0      [B@a6213e4
+0x2170a089   -      bytes  3        0      [B@42a204d
+0x2170a090   -      bytes  3        0      [B@3182976
+0x2170a221   -      bytes  3        0      [B@b4ba813
+0x2170a629   -      bytes  3        0      [B@b057449
+0x2170a634   -      bytes  3        0      [B@e1e8a50
+0x2170a68d   -      bytes  3        0      [B@6748067
+0x2170a68f   -      bytes  3        0      [B@5643e14
+0x2170a690   -      bytes  3        0      [B@e280c05
+0x2170a694   -      bytes  3        0      [B@b94d45a
+0x2170a696   -      bytes  3        0      [B@eae068b
+0x2170a699   -      bytes  3        0      [B@995368
+0x2170a69a   -      bytes  3        0      [B@3226381
+0x2170a69b   -      bytes  3        0      [B@6bbdc26
+0x2170a6a2   -      bytes  3        0      [B@93eb26f
+0x2170a6a3   -      bytes  3        0      [B@ae9fb7c
+0x2170a815   -      bytes  3        0      [B@e9701b9
+0x2170a862   -      bytes  3        0      [B@43ebc03
+0x2170a875   -      bytes  3        0      [B@e10b6bd
+0x2170a876   -      bytes  3        0      [B@7f994b2
+0x2170a88d   -      bytes  3        0      [B@fe7155f
+0x2170a88e   -      bytes  3        0      [B@4613bac
+0x2170a88f   -      bytes  3        0      [B@9d0075
+0x2170a890   -      bytes  3        0      [B@6e849fe
+0x2170b002   -      bytes  3        0      [B@d555411
+0x2170b017   -      bytes  3        0      [B@69fc09b
+0x2170b03c   -      bytes  3        0      [B@568274c
+0x2170b04e   -      bytes  0        0      [B@46a249e
+0x2170b057   -      bytes  3        0      [B@43d5b4
+0x2170b058   -      bytes  0        0      [B@53705dd
+0x22010100   -      ?01    0        0      570491137
+0x22030400   -      ?03    3        0      570622977
+0x22040300   -      ?04    3        0      2
+0x22050400   -      ?05    3        0      0
+0x22051600   -      ?05    3        0      0
+0x23020100   0x1    ?02    0        0      0
+0x23020200   0x2    ?02    0        0      0
+0x23020300   0x4    ?02    0        0      0
+0x23020400   0x10   ?02    0        0      0
+0x23020900   0x20   ?02    0        0      0
+0x23020a00   0x40   ?02    0        0      0
+0x23020b00   0x100  ?02    0        0      0
+0x23020c00   0x200  ?02    0        0      0
+0x23021100   -      ?02    3        0      0
+0x23040100   -      ?04    3        0      0
+0x23041200   -      ?04    3        0      0
+0x23400103   0x1    int    3        0      0
+0x23400103   0x10000 int    3        0      0
+0x23400103   0x2    int    3        0      0
+0x24020100   -      ?02    3        0      false
+0x24020200   -      ?02    3        0      0
+0x24030100   -      ?03    3        0      0.0
+0x24030200   -      ?03    3        0      0
+0x24030300   -      ?03    3        0      604177153
+0x24030400   -      ?03    0        0      false
+0x24030500   -      ?03    0        0      2
+0x24030600   -      ?03    0        0      2
+0x24030700   -      ?03    3        0      0
+0x24030800   -      ?03    0        0      2
+0x24030900   -      ?03    3        0      2
+0x24030a00   -      ?03    0        0      0
+0x24031200   -      ?03    3        0      0
+0x24100100   -      texto  0        0      0
+0x24100200   -      texto  0        0      32.0
+0x24100300   -      texto  3        0      27.5
+0x24100400   -      texto  3        0      50
+0x24100600   -      texto  0        0      32.0
+0x24100700   -      texto  3        0      32
+0x24100800   -      texto  3        0      5
+0x24100900   -      texto  3        0      0
+0x24100a00   -      texto  3        0      false
+0x24100e00   -      texto  3        0      0
+0x24110800   -      ?11    0        0      0
+0x24120100   -      ?12    3        0      0
+0x24120200   -      ?12    0        0      false
+0x24120300   -      ?12    0        0      20.0
+0x24120500   -      ?12    3        0      20
+0x24130100   -      ?13    3        0      0
+0x24130200   -      ?13    3        0      605225490
+0x24140100   -      ?14    0        0      0.0
+0x24140200   -      ?14    0        0      0.0
+0x24140300   -      ?14    0        0      0.0
+0x24140500   -      ?14    3        0      0.0
+0x24150100   -      ?15    0        0      0.0
+0x24150200   -      ?15    0        0      0.0
+0x24150400   -      ?15    0        0      0.0
+0x24150500   -      ?15    0        0      0
+0x24205000   -      bool   3        0      false
+0x24205400   -      bool   0        0      0.0
+0x24205500   -      bool   3        0      0
+0x24205700   -      bool   0        0      0.0
+0x24205800   -      bool   3        0      0
+0x24205900   -      bool   3        0      0
+0x24205a00   -      bool   3        0      2
+0x24205c00   -      bool   0        0      2
+0x24205d00   -      bool   0        0      0
+0x24207000   -      bool   0        0      0
+0x24207100   -      bool   0        0      0.0
+0x24207200   -      bool   3        0      0
+0x24207400   -      bool   3        0      0
+0x24800200   -      ?80    0        0      0
+0x24800300   -      ?80    0        0      612369156
+0x24802100   -      ?80    3        0      0
+0x24802200   -      ?80    3        0      0
+0x24802300   -      ?80    3        0      0
+0x24802f00   -      ?80    3        0      0
+0x24804500   -      ?80    3        0      0
+0x24804600   -      ?80    0        0      0
+0x2540a824   0x1    int    3        0      0
+0x2540a824   0x4    int    3        0      0
+0x2540a825   0x1    int    3        0      0
+0x2540a825   0x4    int    3        0      0
+0x2540a826   0x1    int    3        0      0
+0x2540a826   0x4    int    3        0      0
+0x25600102   0x31   float  3        0      1.0
+0x25600102   0x44   float  3        0      2.0
+0x26010100   0x5    ?01    3        0      true
+0x26020100   -      ?02    3        0      637665538
+0x26200101   0x1    bool   3        0      true
+0x26200101   0x10   bool   3        0      false
+0x26200101   0x4    bool   3        0      true
+0x26200101   0x40   bool   3        0      false
+0x27010800   -      ?01    3        0      0
+0x27020100   -      ?02    3        0      0
+0x2770a814   0x1    bytes  3        0      [B@a91a87b
+0x2770a814   0x2    bytes  3        0      [B@b7c6698
+0x2770a814   0x3    bytes  3        0      [B@cca2ef1
+0x2770a814   0x4    bytes  3        0      [B@bc99ad6
+0x28040200   -      ?04    3        0      0
+0x28060200   -      ?06    3        0      671482369
+0x28060300   -      ?06    3        0      0
+0x28060400   -      ?06    3        0      671482881
+0x28060b00   -      ?06    3        0      0
+0x28060c00   -      ?06    3        0      0
+0x280c0400   -      ?0c    3        0      671876097
+0x280c1100   -      ?0c    3        0      0
+0x28104b00   -      texto  3        0      0
+0x2840b03d   0x1    int    3        0      255
+0x2840b03d   0x2    int    3        0      255
+0x2840b03d   0x3    int    3        0      255
+0x2840b03d   0x4    int    3        0      255
+0x2840b03d   0x5    int    3        0      255
+0x2840b03d   0x6    int    3        0      255
+0x2840b03d   0x7    int    3        0      255
+0x2840b03d   0x8    int    3        0      255
+0x29020400   0x2    ?02    0        0      120
+0x29020900   -      ?02    0        0      3
+0x2a050400   -      ?05    3        0      1
+0x2a050700   -      ?05    3        0      1
+0x2a070300   -      ?07    3        0      16712035
+0x2a070600   -      ?07    3        0      1
+0x2b010100   -      ?01    3        0      0
+0x2b020200   -      ?02    0        0      0
+0x2c010100   -      ?01    3        0      0
+0x2c010200   -      ?01    3        0      0
+0x2c010500   0x20000000 ?01    3        0      0
+0x2c010700   -      ?01    3        0      0
+0x2c010800   0x20000000 ?01    3        0      0
+0x2c010a00   0x55   ?01    3        0      true
+0x2c100300   -      texto  3        0      0
+0x2c100400   -      texto  3        0      739247105
+0x2f020900   -      ?02    0        0      0
+0x2f030400   -      ?03    0        0      false
+0x2f030b00   -      ?03    3        0      0
+0x32020300   -      ?02    3        0      0
+0x400100     0x1    int    0        0      0.0
+0x400100     0x2    int    0        0      0.0
+0x400400     -      int    0        0      313
+0x40300d00   -      ?30    3        0      0
+0x403100     -      int    0        0      73.0
+0x404100     -      int    3        0      0.0
+0x404200     -      int    3        0      76.0
+0x404500     -      int    3        0      0
+0x41020100   -      ?02    3        0      0
+0x41020200   -      ?02    3        0      0
+0x41020300   -      ?02    3        0      0
+0x41020400   -      ?02    3        0      0
+0x41020500   -      ?02    3        0      0
+0x41020600   -      ?02    3        0      0
+0x41020800   -      ?02    3        0      0
+0x41020900   -      ?02    3        0      false
+0x41030100   -      ?03    3        0      0
+0x41030d00   -      ?03    3        0      0
+0x41030e00   -      ?03    3        0      0
+0x41030f00   -      ?03    3        0      0
+0x41031000   -      ?03    3        0      0
+0x41032000   -      ?03    3        0      0
+0x500900     0x1    long   0        0      0
+0x500900     0x2    long   0        0      0
+0x500900     0x4    long   0        0      0
+0x500900     0x8    long   0        0      0
+
+---------------------------------------------------------------------
+ 9. NOMES OFICIAIS (dump do sistema da central, 20/11/2026)
+---------------------------------------------------------------------
+Fonte: constantes da biblioteca ECARX (com.ecarx.xui.adaptapi.car.*) dentro do AutoEnergy.apk
+do system.img. Cruzado com as 1755 propriedades do log de 17/11. Tabela completa: C:\ex2tmp\idmap.json
+(4539 nomes; gerada por androguard).
+0x404000    TYPE_EV_BATTERY_PERCENTAGE — % da bateria (float, 1 casa)          USADO NO APP (2.9.0)
+0x24120400  CHARGE_FUNC_DISCHARGING_SOC_MAX (no log ≈ % −1)
+0x403000    TYPE_MAINTENANCE_MILEAGE — km até a revisão (4850)                  NÃO é a bateria
+0x21121400  BCM_FUNC_LIGHT_DIPPED_BEAM — farol baixo                           CONFIRMADO pelo nome
+0x21121300  BCM_FUNC_LIGHT_MAIN_BEAM — farol alto                              CONFIRMADO
+0x21121900  BCM_FUNC_DRIVER_SEAT_BELT_LOCK_STATUS — cinto do motorista         (NÃO é DRL)
+0x21050C00  BCM_FUNC_LIGHT_REAR_POSITION_LAMPS — lanternas traseiras (posição)  NOVO, a usar
+0x21051800  BCM_FUNC_LIGHT_WELCOME_LIGHT — luz de boas-vindas                  NOVO
+0x21051000  BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS — luz ambiente interna             NOVO
+0x22010100  DM_FUNC_DRIVE_MODE_SELECT — modo de condução (0x22010101 ECO, …111 NORMAL, …115 SPORT+)
+0x24140500  CHARGE_FUNC_CHARGING_ENERGY — energia carregada (kWh)              NOVO, a usar
+0x24205500  CHARGE_FUNC_CHARGING_WORK_TIME — tempo de carga
+0x24100200  CHARGE_FUNC_CHARGING_SOC — limite de carga (log: 32?)              A CONFIRMAR
+0x404100    TYPE_CHARGING_ENDURANCE_MILEAGE — autonomia ganha na carga?        A CONFIRMAR
+0x17600309  TIRE_PRESSURE (áreas 0x1/0x2/0x4/0x8) — pressão dos pneus          log 0,0 (a confirmar com o carro pronto)
+0x500900    TIRE_WARNING — alerta de pneu (por roda)
+0x24801500  TRIP_DI_TOTAL_DISTANCE · 0x24801600 TRIP_DI_TOTAL_DURATION · 0x24801200 TRIP_DI_AVG_SPEED
+0x24804100 / 4300 / 4400  TRIP_ED_*_ENERGY_FLOW — energia da viagem: tração ~90% · bateria ~3,5% · outros ~6,5%
+0x101900    SENSOR_TYPE_ENDURANCE_MILEAGE_EV — autonomia (km) · 0x11600208 PERF_VEHICLE_SPEED_DISPLAY
+0x101000    SENSOR_TYPE_STEERING_WHEEL_ANGLE · 0x20061000 SETTING_FUNC_PBC_EPB_SWITCH (freio de mão/P)
+Os sinais 0x2140xxxx (alavanca da seta, lâmpadas, alerta, freio, temperatura) não têm nome nessa biblioteca:
+são sinais diretos do CAN; os valores já confirmados no carro continuam valendo.

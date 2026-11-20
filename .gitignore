@@ -1,0 +1,18 @@
+# compilação
+build/
+.gradle/
+.kotlin/
+local.properties
+ex2-native/dist/
+*.apk
+
+# modelo 3D e fontes de terceiros (cada um gera/coloca o seu; ver README)
+ex2-native/app/src/main/assets/*.glb
+ex2-native/app/src/main/assets/FE-FONT.TTF
+ex2-native/app/src/main/assets/fonts/
+ex2-native/assets-src/
+
+# chaves de assinatura
+ex2-native/keys/
+*.pk8
+*.pem

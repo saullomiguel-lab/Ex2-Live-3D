@@ -1,0 +1,109 @@
+# pt ‖ en ‖ es ‖ fr ‖ ru ‖ ar ‖ th ‖ vi ‖ id ‖ zh   (gerar: python tools\make_i18n.py)
+Preparando o EX2 3D…‖Preparing EX2 3D…‖Preparando EX2 3D…‖Préparation d'EX2 3D…‖Подготовка EX2 3D…‖جارٍ تجهيز EX2 3D…‖กำลังเตรียม EX2 3D…‖Đang chuẩn bị EX2 3D…‖Menyiapkan EX2 3D…‖正在准备 EX2 3D…
+Carregando o EX2 3D… %d%%‖Loading EX2 3D… %d%%‖Cargando EX2 3D… %d%%‖Chargement d'EX2 3D… %d%%‖Загрузка EX2 3D… %d%%‖جارٍ تحميل EX2 3D… %d%%‖กำลังโหลด EX2 3D… %d%%‖Đang tải EX2 3D… %d%%‖Memuat EX2 3D… %d%%‖正在加载 EX2 3D… %d%%
+O 3D não abriu da última vez‖3D didn't open last time‖El 3D no abrió la última vez‖La 3D ne s'est pas ouverte la dernière fois‖В прошлый раз 3D не открылось‖لم يُفتح العرض ثلاثي الأبعاد في المرة الأخيرة‖ครั้งที่แล้ว 3D เปิดไม่ได้‖Lần trước 3D không mở được‖3D tidak terbuka terakhir kali‖上次 3D 未能打开
+Tentar abrir o 3D‖Try opening 3D‖Intentar abrir el 3D‖Réessayer la 3D‖Открыть 3D снова‖حاول فتح العرض‖ลองเปิด 3D‖Thử mở 3D‖Coba buka 3D‖尝试打开 3D
+Fechar‖Close‖Cerrar‖Fermer‖Закрыть‖إغلاق‖ปิด‖Đóng‖Tutup‖关闭
+Editar carro‖Edit car‖Editar auto‖Modifier‖Изменить авто‖تعديل السيارة‖แก้ไขรถ‖Sửa xe‖Ubah mobil‖编辑车辆
+Ativar papel de parede‖Turn on wallpaper‖Activar fondo‖Activer le fond‖Включить обои‖تفعيل الخلفية‖เปิดวอลเปเปอร์‖Bật hình nền‖Aktifkan wallpaper‖启用壁纸
+Desativar papel de parede‖Turn off wallpaper‖Desactivar fondo‖Désactiver le fond‖Выключить обои‖إيقاف الخلفية‖ปิดวอลเปเปอร์‖Tắt hình nền‖Matikan wallpaper‖关闭壁纸
+Ajustes‖Settings‖Ajustes‖Réglages‖Настройки‖الإعدادات‖การตั้งค่า‖Cài đặt‖Pengaturan‖设置
+3/4 frente‖3/4 front‖3/4 frente‖3/4 avant‖3/4 спереди‖3/4 أمامي‖3/4 ด้านหน้า‖3/4 trước‖3/4 depan‖前 3/4
+Frente‖Front‖Frente‖Avant‖Спереди‖أمام‖ด้านหน้า‖Trước‖Depan‖正前
+Lateral‖Side‖Lateral‖Côté‖Сбоку‖جانب‖ด้านข้าง‖Bên hông‖Samping‖侧面
+Traseira‖Rear‖Trasera‖Arrière‖Сзади‖خلف‖ด้านหลัง‖Sau‖Belakang‖后方
+Topo‖Top‖Arriba‖Dessus‖Сверху‖أعلى‖ด้านบน‖Trên‖Atas‖俯视
+Portas‖Doors‖Puertas‖Portes‖Двери‖الأبواب‖ประตู‖Cửa‖Pintu‖车门
+Fechar tudo‖Close all‖Cerrar todo‖Tout fermer‖Закрыть всё‖إغلاق الكل‖ปิดทั้งหมด‖Đóng tất cả‖Tutup semua‖全部关闭
+Seta esq.‖Left‖Izq.‖Gauche‖Левый‖يسار‖ซ้าย‖Trái‖Kiri‖左转
+Alerta‖Hazard‖Emerg.‖Détresse‖Аварийка‖تحذير‖ไฟฉุกเฉิน‖Khẩn cấp‖Hazard‖双闪
+Seta dir.‖Right‖Der.‖Droite‖Правый‖يمين‖ขวา‖Phải‖Kanan‖右转
+Farol‖Low beam‖Faros‖Feux‖Фары‖المصابيح‖ไฟหน้า‖Đèn pha‖Lampu‖近光
+Alto‖High beam‖Altas‖Phares‖Дальний‖عالي‖ไฟสูง‖Pha xa‖Jauh‖远光
+Freio‖Brake‖Freno‖Frein‖Тормоз‖الفرامل‖เบรก‖Phanh‖Rem‖刹车
+Agora‖Now‖Ahora‖Maintenant‖Сейчас‖الآن‖ตอนนี้‖Bây giờ‖Sekarang‖现在
+hora de teste‖test time‖hora de prueba‖heure de test‖тестовое время‖وقت تجريبي‖เวลาทดสอบ‖giờ thử‖jam uji‖测试时间
+relógio‖clock‖reloj‖horloge‖часы‖الساعة‖นาฬิกา‖đồng hồ‖jam‖时钟
+Está chovendo aí?‖Is it raining there?‖¿Está lloviendo ahí?‖Il pleut chez vous ?‖У вас идёт дождь?‖هل تمطر عندك؟‖ที่นั่นฝนตกไหม?‖Ở đó có mưa không?‖Apakah di sana hujan?‖您那里在下雨吗？
+A previsão do tempo diz que está chovendo agora‖The forecast says it is raining now‖El pronóstico dice que ahora está lloviendo‖La météo indique qu'il pleut en ce moment‖Прогноз говорит, что сейчас идёт дождь‖تقول النشرة الجوية إنها تمطر الآن‖พยากรณ์อากาศบอกว่าตอนนี้ฝนตก‖Dự báo cho biết hiện đang mưa‖Prakiraan cuaca menyebut sedang hujan‖天气预报显示现在正在下雨
+Adiar chuva‖Delay rain‖Posponer lluvia‖Reporter la pluie‖Отложить дождь‖تأجيل المطر‖เลื่อนฝน‖Hoãn mưa‖Tunda hujan‖推迟下雨
+Chover agora‖Rain now‖Llover ahora‖Pluie maintenant‖Дождь сейчас‖أمطر الآن‖ให้ฝนตกเลย‖Mưa ngay‖Hujan sekarang‖现在下雨
+Adiar: sem chuva por 1 hora; depois, se a previsão ainda disser chuva, pergunto de novo‖Delay: no rain for 1 hour; then, if the forecast still says rain, I'll ask again‖Posponer: sin lluvia durante 1 hora; después, si el pronóstico sigue diciendo lluvia, pregunto de nuevo‖Reporter : pas de pluie pendant 1 heure ; ensuite, si la météo annonce encore de la pluie, je redemande‖Отложить: без дождя 1 час; потом, если прогноз всё ещё обещает дождь, спрошу снова‖التأجيل: بدون مطر لمدة ساعة؛ ثم إذا ظلت النشرة تقول مطر، أسأل مرة أخرى‖เลื่อน: ไม่มีฝน 1 ชั่วโมง จากนั้นถ้าพยากรณ์ยังบอกว่าฝนตก จะถามอีกครั้ง‖Hoãn: không mưa trong 1 giờ; sau đó nếu dự báo vẫn báo mưa, tôi sẽ hỏi lại‖Tunda: tanpa hujan selama 1 jam; lalu jika prakiraan masih hujan, saya tanya lagi‖推迟：1 小时内不下雨；之后如果预报仍显示下雨，会再次询问
+Nova versão disponível‖New version available‖Nueva versión disponible‖Nouvelle version disponible‖Доступна новая версия‖يتوفر إصدار جديد‖มีเวอร์ชันใหม่‖Có phiên bản mới‖Versi baru tersedia‖有新版本可用
+EX2 Live 3D %s (você tem a %s). Quer baixar e instalar agora?‖EX2 Live 3D %s (you have %s). Download and install now?‖EX2 Live 3D %s (tienes la %s). ¿Descargar e instalar ahora?‖EX2 Live 3D %s (vous avez la %s). Télécharger et installer maintenant ?‖EX2 Live 3D %s (у вас %s). Скачать и установить сейчас?‖EX2 Live 3D %s (لديك %s). هل تريد التنزيل والتثبيت الآن؟‖EX2 Live 3D %s (คุณมี %s) ดาวน์โหลดและติดตั้งตอนนี้ไหม?‖EX2 Live 3D %s (bạn đang có %s). Tải và cài ngay?‖EX2 Live 3D %s (Anda punya %s). Unduh dan pasang sekarang?‖EX2 Live 3D %s（当前 %s）。现在下载并安装吗？
+Agora não‖Not now‖Ahora no‖Pas maintenant‖Не сейчас‖ليس الآن‖ไม่ใช่ตอนนี้‖Để sau‖Nanti saja‖以后再说
+Baixar e instalar‖Download and install‖Descargar e instalar‖Télécharger et installer‖Скачать и установить‖تنزيل وتثبيت‖ดาวน์โหลดและติดตั้ง‖Tải và cài đặt‖Unduh dan pasang‖下载并安装
+Versão instalada: %s‖Installed version: %s‖Versión instalada: %s‖Version installée : %s‖Установлена версия: %s‖الإصدار المثبت: %s‖เวอร์ชันที่ติดตั้ง: %s‖Phiên bản đã cài: %s‖Versi terpasang: %s‖已安装版本：%s
+Verificar agora‖Check now‖Buscar ahora‖Vérifier‖Проверить‖تحقق الآن‖ตรวจสอบเลย‖Kiểm tra ngay‖Periksa sekarang‖立即检查
+Versão %s no GitHub‖Version %s on GitHub‖Versión %s en GitHub‖Version %s sur GitHub‖Версия %s на GitHub‖الإصدار %s على GitHub‖เวอร์ชัน %s บน GitHub‖Phiên bản %s trên GitHub‖Versi %s di GitHub‖GitHub 上的版本 %s
+Versão %s‖Version %s‖Versión %s‖Version %s‖Версия %s‖الإصدار %s‖เวอร์ชัน %s‖Phiên bản %s‖Versi %s‖版本 %s
+Buscar atualizações automaticamente‖Check for updates automatically‖Buscar actualizaciones automáticamente‖Rechercher les mises à jour automatiquement‖Проверять обновления автоматически‖البحث عن التحديثات تلقائيًا‖ตรวจหาอัปเดตอัตโนมัติ‖Tự động tìm bản cập nhật‖Cari pembaruan otomatis‖自动检查更新
+Ao abrir o app com internet, avisa se houver versão nova e pergunta se quer baixar‖When the app opens with internet, tells you about a new version and asks to download it‖Al abrir la app con internet, avisa si hay versión nueva y pregunta si quieres descargarla‖À l'ouverture avec internet, signale une nouvelle version et propose de la télécharger‖При запуске с интернетом сообщает о новой версии и предлагает скачать‖عند فتح التطبيق مع الإنترنت، ينبّهك إلى الإصدار الجديد ويسألك عن التنزيل‖เมื่อเปิดแอปและมีอินเทอร์เน็ต จะแจ้งเวอร์ชันใหม่และถามว่าจะดาวน์โหลดไหม‖Khi mở ứng dụng có mạng, báo nếu có bản mới và hỏi có tải không‖Saat aplikasi dibuka dengan internet, memberi tahu versi baru dan menanyakan unduhan‖联网打开应用时，如有新版本会提示并询问是否下载
+Novidades‖What's new‖Novedades‖Nouveautés‖Что нового‖الجديد‖มีอะไรใหม่‖Có gì mới‖Yang baru‖更新内容
+As versões vêm de github.com/saullomiguel-lab/Ex2-Live-3D. O app baixa e instala sozinho, sem precisar de outro programa.‖Versions come from github.com/saullomiguel-lab/Ex2-Live-3D. The app downloads and installs by itself, no other program needed.‖Las versiones vienen de github.com/saullomiguel-lab/Ex2-Live-3D. La app descarga e instala sola, sin otro programa.‖Les versions viennent de github.com/saullomiguel-lab/Ex2-Live-3D. L'app télécharge et installe toute seule, sans autre programme.‖Версии берутся с github.com/saullomiguel-lab/Ex2-Live-3D. Приложение само скачивает и устанавливает их, без других программ.‖الإصدارات من github.com/saullomiguel-lab/Ex2-Live-3D. يقوم التطبيق بالتنزيل والتثبيت بنفسه دون برامج أخرى.‖เวอร์ชันมาจาก github.com/saullomiguel-lab/Ex2-Live-3D แอปดาวน์โหลดและติดตั้งเองโดยไม่ต้องใช้โปรแกรมอื่น‖Các phiên bản lấy từ github.com/saullomiguel-lab/Ex2-Live-3D. Ứng dụng tự tải và cài, không cần chương trình khác.‖Versi berasal dari github.com/saullomiguel-lab/Ex2-Live-3D. Aplikasi mengunduh dan memasang sendiri, tanpa program lain.‖版本来自 github.com/saullomiguel-lab/Ex2-Live-3D。应用会自行下载并安装，无需其他程序。
+Valor do kWh‖Price per kWh‖Precio del kWh‖Prix du kWh‖Цена кВт·ч‖سعر الكيلوواط ساعة‖ราคาต่อ kWh‖Giá mỗi kWh‖Harga per kWh‖每度电价格
+Base para calcular quanto custa cada carga‖Used to calculate the cost of each charge‖Base para calcular el costo de cada carga‖Sert à calculer le coût de chaque recharge‖Нужна для расчёта стоимости каждой зарядки‖يُستخدم لحساب تكلفة كل شحنة‖ใช้คำนวณค่าใช้จ่ายของการชาร์จแต่ละครั้ง‖Dùng để tính chi phí mỗi lần sạc‖Dasar menghitung biaya tiap pengisian‖用于计算每次充电的费用
+reais‖units‖unidades‖unités‖целые‖وحدات‖หน่วย‖đơn vị‖satuan‖元
+centavos‖cents‖centavos‖centimes‖сотые‖أجزاء‖สตางค์‖xu‖sen‖分
+Cancelar‖Cancel‖Cancelar‖Annuler‖Отмена‖إلغاء‖ยกเลิก‖Hủy‖Batal‖取消
+Salvar‖Save‖Guardar‖Enregistrer‖Сохранить‖حفظ‖บันทึก‖Lưu‖Simpan‖保存
+Amanhecer‖Dawn‖Amanecer‖Aube‖Рассвет‖الفجر‖รุ่งเช้า‖Bình minh‖Fajar‖黎明
+Anoitecer‖Dusk‖Anochecer‖Crépuscule‖Сумерки‖الغسق‖พลบค่ำ‖Hoàng hôn‖Senja‖黄昏
+Horário em que já é dia‖Time when it is already day‖Hora en que ya es de día‖Heure où il fait jour‖Время, когда уже день‖الوقت الذي يكون فيه النهار‖เวลาที่เป็นกลางวันแล้ว‖Thời điểm trời đã sáng‖Waktu saat sudah siang‖天亮的时间
+Horário em que já é noite‖Time when it is already night‖Hora en que ya es de noche‖Heure où il fait nuit‖Время, когда уже ночь‖الوقت الذي يكون فيه الليل‖เวลาที่เป็นกลางคืนแล้ว‖Thời điểm trời đã tối‖Waktu saat sudah malam‖天黑的时间
+minutos‖minutes‖minutos‖minutes‖минуты‖دقائق‖นาที‖phút‖menit‖分钟
+segundos‖seconds‖segundos‖secondes‖секунды‖ثوانٍ‖วินาที‖giây‖detik‖秒
+Sempre‖Always‖Siempre‖Toujours‖Всегда‖دائمًا‖ตลอด‖Luôn luôn‖Selalu‖始终
+Alterar‖Change‖Cambiar‖Modifier‖Изменить‖تغيير‖เปลี่ยน‖Đổi‖Ubah‖更改
+Seletor de papel de parede indisponível‖Wallpaper picker unavailable‖Selector de fondos no disponible‖Sélecteur de fond indisponible‖Выбор обоев недоступен‖أداة اختيار الخلفية غير متاحة‖ไม่มีตัวเลือกวอลเปเปอร์‖Không có trình chọn hình nền‖Pemilih wallpaper tidak tersedia‖壁纸选择器不可用
+Papel de parede da central de volta.‖Head unit wallpaper restored.‖Fondo de la central restaurado.‖Fond d'origine rétabli.‖Обои магнитолы восстановлены.‖تمت استعادة خلفية الشاشة الأصلية.‖คืนวอลเปเปอร์ของรถแล้ว‖Đã khôi phục hình nền của xe.‖Wallpaper bawaan dipulihkan.‖已恢复车机壁纸。
+Papel de parede original restaurado.‖Original wallpaper restored.‖Fondo original restaurado.‖Fond d'origine rétabli.‖Исходные обои восстановлены.‖تمت استعادة الخلفية الأصلية.‖คืนวอลเปเปอร์เดิมแล้ว‖Đã khôi phục hình nền gốc.‖Wallpaper asli dipulihkan.‖已恢复原壁纸。
+Papel de parede 3D ativado.‖3D wallpaper turned on.‖Fondo 3D activado.‖Fond 3D activé.‖3D-обои включены.‖تم تفعيل الخلفية ثلاثية الأبعاد.‖เปิดวอลเปเปอร์ 3D แล้ว‖Đã bật hình nền 3D.‖Wallpaper 3D aktif.‖已启用 3D 壁纸。
+O sistema não confirmou a troca.‖The system did not confirm the change.‖El sistema no confirmó el cambio.‖Le système n'a pas confirmé le changement.‖Система не подтвердила смену.‖لم يؤكد النظام التغيير.‖ระบบไม่ยืนยันการเปลี่ยน‖Hệ thống chưa xác nhận thay đổi.‖Sistem tidak mengonfirmasi perubahan.‖系统未确认更改。
+Esta vista agora é a do papel de parede.‖This view is now the wallpaper view.‖Esta vista ahora es la del fondo.‖Cette vue est maintenant celle du fond.‖Этот ракурс теперь на обоях.‖أصبح هذا العرض هو عرض الخلفية.‖มุมนี้เป็นมุมของวอลเปเปอร์แล้ว‖Góc nhìn này giờ là của hình nền.‖Tampilan ini kini jadi tampilan wallpaper.‖此视角现已用于壁纸。
+Sem leitura agora: aparece "- -" até o carro (ou a internet) informar‖No reading now: shows "- -" until the car (or the internet) reports it‖Sin lectura: muestra "- -" hasta que el auto (o internet) informe‖Pas de mesure : affiche « - - » jusqu'à ce que la voiture (ou internet) la donne‖Нет данных: показывается «- -», пока авто (или интернет) не сообщит‖لا توجد قراءة: يظهر "- -" حتى تُبلغ السيارة (أو الإنترنت)‖ยังไม่มีค่า: แสดง "- -" จนกว่ารถ (หรืออินเทอร์เน็ต) จะแจ้ง‖Chưa có số đo: hiện "- -" cho đến khi xe (hoặc internet) báo‖Belum ada data: tampil "- -" sampai mobil (atau internet) memberi tahu‖暂无读数：显示“- -”，直到车辆（或网络）提供
+Sensor do carro: %s°‖Car sensor: %s°‖Sensor del auto: %s°‖Capteur de la voiture : %s°‖Датчик авто: %s°‖حساس السيارة: %s°‖เซ็นเซอร์รถ: %s°‖Cảm biến xe: %s°‖Sensor mobil: %s°‖车辆传感器：%s°
+O carro ainda não informou; usando a internet: %s°‖The car hasn't reported yet; using the internet: %s°‖El auto aún no informó; usando internet: %s°‖La voiture n'a pas encore répondu ; via internet : %s°‖Авто ещё не сообщило; по интернету: %s°‖لم تُبلغ السيارة بعد؛ من الإنترنت: %s°‖รถยังไม่แจ้ง ใช้ข้อมูลอินเทอร์เน็ต: %s°‖Xe chưa báo; dùng internet: %s°‖Mobil belum memberi tahu; pakai internet: %s°‖车辆尚未提供；使用网络数据：%s°
+Carro‖Car‖Auto‖Voiture‖Авто‖السيارة‖รถ‖Xe‖Mobil‖车辆
+Papel de parede‖Wallpaper‖Fondo de pantalla‖Fond d'écran‖Обои‖الخلفية‖วอลเปเปอร์‖Hình nền‖Wallpaper‖壁纸
+Saudações‖Greetings‖Saludos‖Salutations‖Приветствия‖التحيات‖คำทักทาย‖Lời chào‖Sapaan‖问候语
+Carregamento‖Charging‖Carga‖Recharge‖Зарядка‖الشحن‖การชาร์จ‖Sạc‖Pengisian‖充电
+Cenário‖Scenery‖Escenario‖Décor‖Сцена‖المشهد‖ฉาก‖Khung cảnh‖Latar‖场景
+Horário e clima‖Time and weather‖Hora y clima‖Heure et météo‖Время и погода‖الوقت والطقس‖เวลาและสภาพอากาศ‖Giờ và thời tiết‖Waktu dan cuaca‖时间与天气
+Qualidade‖Quality‖Calidad‖Qualité‖Качество‖الجودة‖คุณภาพ‖Chất lượng‖Kualitas‖画质
+Idioma e região‖Language and region‖Idioma y región‖Langue et région‖Язык и регион‖اللغة والمنطقة‖ภาษาและภูมิภาค‖Ngôn ngữ và khu vực‖Bahasa dan wilayah‖语言与地区
+Atualizações‖Updates‖Actualizaciones‖Mises à jour‖Обновления‖التحديثات‖อัปเดต‖Cập nhật‖Pembaruan‖更新
+Sobre‖About‖Acerca de‖À propos‖О приложении‖حول‖เกี่ยวกับ‖Giới thiệu‖Tentang‖关于
+Sincronização‖Sync‖Sincronización‖Synchronisation‖Синхронизация‖المزامنة‖การซิงค์‖Đồng bộ‖Sinkronisasi‖同步
+Sincronizar com o carro‖Sync with the car‖Sincronizar con el auto‖Synchroniser avec la voiture‖Синхронизировать с авто‖المزامنة مع السيارة‖ซิงค์กับรถ‖Đồng bộ với xe‖Sinkronkan dengan mobil‖与车辆同步
+Portas, setas e luzes do 3D seguem o carro de verdade‖3D doors, indicators and lights follow the real car‖Puertas, intermitentes y luces del 3D siguen al auto real‖Portes, clignotants et feux de la 3D suivent la vraie voiture‖Двери, поворотники и фары в 3D повторяют настоящее авто‖الأبواب والإشارات والأضواء في العرض تتبع السيارة الحقيقية‖ประตู ไฟเลี้ยว และไฟใน 3D ทำตามรถจริง‖Cửa, xi-nhan và đèn 3D theo xe thật‖Pintu, sein, dan lampu 3D mengikuti mobil asli‖3D 车门、转向灯和车灯与实车同步
+Temperatura externa‖Outside temperature‖Temperatura exterior‖Température extérieure‖Температура снаружи‖درجة الحرارة الخارجية‖อุณหภูมิภายนอก‖Nhiệt độ ngoài trời‖Suhu luar‖车外温度
+Widget (canto de cima à direita, no app e no papel de parede)‖Widget (top corner, in the app and on the wallpaper)‖Widget (esquina superior, en la app y en el fondo)‖Widget (coin supérieur, dans l'app et sur le fond)‖Виджет (верхний угол, в приложении и на обоях)‖الأداة (الزاوية العلوية، في التطبيق والخلفية)‖วิดเจ็ต (มุมบน ในแอปและวอลเปเปอร์)‖Tiện ích (góc trên, trong ứng dụng và hình nền)‖Widget (pojok atas, di aplikasi dan wallpaper)‖小组件（顶部角落，应用与壁纸中）
+Usar como papel de parede‖Use as wallpaper‖Usar como fondo‖Utiliser comme fond‖Сделать обоями‖استخدام كخلفية‖ใช้เป็นวอลเปเปอร์‖Dùng làm hình nền‖Jadikan wallpaper‖设为壁纸
+Coloca o EX2 3D na tela inicial da central‖Puts EX2 3D on the head unit home screen‖Pone EX2 3D en la pantalla de inicio‖Met EX2 3D sur l'écran d'accueil‖Ставит EX2 3D на главный экран‖يضع EX2 3D على الشاشة الرئيسية‖นำ EX2 3D ไปไว้ที่หน้าจอหลัก‖Đưa EX2 3D lên màn hình chính‖Pasang EX2 3D di layar utama‖将 EX2 3D 放到车机主屏
+Ativar‖Turn on‖Activar‖Activer‖Включить‖تفعيل‖เปิด‖Bật‖Aktifkan‖启用
+Papel de parede anterior‖Previous wallpaper‖Fondo anterior‖Fond précédent‖Прежние обои‖الخلفية السابقة‖วอลเปเปอร์ก่อนหน้า‖Hình nền trước‖Wallpaper sebelumnya‖之前的壁纸
+Volta ao papel de parede de antes do EX2 3D‖Goes back to the wallpaper before EX2 3D‖Vuelve al fondo de antes de EX2 3D‖Revient au fond d'avant EX2 3D‖Вернуть обои до EX2 3D‖العودة إلى الخلفية قبل EX2 3D‖กลับไปใช้วอลเปเปอร์ก่อน EX2 3D‖Quay lại hình nền trước EX2 3D‖Kembali ke wallpaper sebelum EX2 3D‖恢复使用 EX2 3D 之前的壁纸
+Restaurar‖Restore‖Restaurar‖Rétablir‖Вернуть‖استعادة‖คืนค่า‖Khôi phục‖Pulihkan‖恢复
+Vista‖View‖Vista‖Vue‖Ракурс‖العرض‖มุมมอง‖Góc nhìn‖Tampilan‖视角
+Usar esta vista‖Use this view‖Usar esta vista‖Utiliser cette vue‖Этот ракурс‖استخدام هذا العرض‖ใช้มุมนี้‖Dùng góc này‖Pakai tampilan ini‖使用此视角
+O papel de parede passa a mostrar o carro do ângulo que está na tela agora‖The wallpaper will show the car from the angle on screen now‖El fondo mostrará el auto desde el ángulo actual‖Le fond montrera la voiture sous l'angle actuel‖Обои покажут авто с текущего ракурса‖ستعرض الخلفية السيارة من الزاوية الحالية‖วอลเปเปอร์จะแสดงรถจากมุมที่เห็นตอนนี้‖Hình nền sẽ hiện xe ở góc đang thấy‖Wallpaper menampilkan mobil dari sudut saat ini‖壁纸将以当前屏幕角度显示车辆
+Vista padrão‖Default view‖Vista predeterminada‖Vue par défaut‖Ракурс по умолчанию‖العرض الافتراضي‖มุมเริ่มต้น‖Góc mặc định‖Tampilan bawaan‖默认视角
+Volta ao ângulo original do papel de parede‖Back to the original wallpaper angle‖Vuelve al ángulo original del fondo‖Revient à l'angle d'origine‖Вернуть исходный ракурс обоев‖العودة إلى زاوية الخلفية الأصلية‖กลับไปมุมเดิมของวอลเปเปอร์‖Về góc gốc của hình nền‖Kembali ke sudut asli wallpaper‖恢复壁纸的原始角度
+Voltar ao padrão‖Reset‖Restablecer‖Par défaut‖Сбросить‖الافتراضي‖ค่าเริ่มต้น‖Mặc định‖Atur ulang‖恢复默认
+O papel de parede voltou à vista padrão.‖The wallpaper is back to the default view.‖El fondo volvió a la vista predeterminada.‖Le fond est revenu à la vue par défaut.‖Обои вернулись к ракурсу по умолчанию.‖عادت الخلفية إلى العرض الافتراضي.‖วอลเปเปอร์กลับเป็นมุมเริ่มต้นแล้ว‖Hình nền đã về góc mặc định.‖Wallpaper kembali ke tampilan bawaan.‖壁纸已恢复默认视角。
+Girar o carro com toque‖Rotate the car by touch‖Girar el auto con el dedo‖Tourner la voiture au toucher‖Вращать авто касанием‖تدوير السيارة باللمس‖หมุนรถด้วยการสัมผัส‖Xoay xe bằng chạm‖Putar mobil dengan sentuhan‖触摸旋转车辆
+Arraste no papel de parede para girar; volta sozinho depois de 30 s‖Drag on the wallpaper to rotate; returns by itself after 30 s‖Arrastra en el fondo para girar; vuelve solo tras 30 s‖Glissez sur le fond pour tourner ; revient seul après 30 s‖Проведите по обоям для поворота; через 30 с вернётся сам‖اسحب على الخلفية للتدوير؛ تعود وحدها بعد 30 ث‖ลากบนวอลเปเปอร์เพื่อหมุน กลับเองหลัง 30 วินาที‖Kéo trên hình nền để xoay; tự trở lại sau 30 giây‖Geser di wallpaper untuk memutar; kembali sendiri setelah 30 dtk‖在壁纸上拖动旋转；30 秒后自动复位
+Widget‖Widget‖Widget‖Widget‖Виджет‖الأداة‖วิดเจ็ต‖Tiện ích‖Widget‖小组件
+Nascer e pôr do sol automáticos‖Automatic sunrise and sunset‖Amanecer y atardecer automáticos‖Lever et coucher du soleil automatiques‖Автоматический восход и закат‖شروق وغروب تلقائي‖เวลาพระอาทิตย์ขึ้น-ตกอัตโนมัติ‖Bình minh và hoàng hôn tự động‖Matahari terbit dan terbenam otomatis‖自动日出日落
+Calculados pela localização do carro, todo dia‖Calculated from the car's location, every day‖Calculados por la ubicación del auto, cada día‖Calculés selon la position de la voiture, chaque jour‖Рассчитываются по местоположению авто каждый день‖تُحسب من موقع السيارة كل يوم‖คำนวณจากตำแหน่งรถทุกวัน‖Tính theo vị trí xe mỗi ngày‖Dihitung dari lokasi mobil setiap hari‖每天根据车辆位置计算
+Sol‖Sun‖Sol‖Soleil‖Солнце‖مشمس‖แดด‖Nắng‖Cerah‖晴
+Nublado‖Cloudy‖Nublado‖Nuageux‖Облачно‖غائم‖มีเมฆ‖Nhiều mây‖Berawan‖多云
+Chuva‖Rain‖Lluvia‖Pluie‖Дождь‖مطر‖ฝน‖Mưa‖Hujan‖雨
+Tempestade‖Storm‖Tormenta‖Orage‖Гроза‖عاصفة‖พายุ‖Bão‖Badai‖雷暴
+Clima automático‖Automatic weather‖Clima automático‖Météo automatique‖Автоматическая погода‖طقس تلقائي‖สภาพอากาศอัตโนมัติ‖Thời tiết tự động‖Cuaca otomatis‖自动天气
+O céu segue a previsão do tempo de onde o carro está (internet)‖The sky follows the weather forecast where the car is (internet)‖El cielo sigue el pronóstico de donde está el auto (internet)‖Le ciel suit la météo du lieu de la voiture (internet)‖Небо следует прогнозу погоды там, где авто (интернет)‖تتبع السماء توقعات الطقس في موقع السيارة (إنترنت)‖ท้องฟ้าเป็นไปตามพยากรณ์อากาศที่รถอยู่ (อินเทอร์เน็ต)‖Bầu trời theo dự báo nơi xe đang ở (internet)‖Langit mengikuti prakiraan cuaca lokasi mobil (internet)‖天空跟随车辆所在地天气预报（需联网）
+Clima‖Weather‖Clima‖Météo‖Погода‖الطقس‖สภาพอากาศ‖Thời tiết‖Cuaca‖天气
+Clima escolhido‖Chosen weather‖Clima elegido‖Météo choisie‖Выбранная погода‖الطقس المختار‖สภาพอากาศที่เลือก‖Thời tiết đã chọn‖Cuaca pilihan‖选择的天气
+Tocar num clima desliga o automático‖Tapping a weather turns off automatic‖Tocar un clima desactiva el automático‖Toucher une météo désactive l'automatique‖Выбор погоды отключает автоматику‖اختيار طقس يوقف الوضع التلقائي‖แตะสภาพอากาศจะปิดโหมดอัตโนมัติ‖Chạm chọn thời tiết sẽ tắt tự động‖Memilih cuaca mematikan otomatis‖点选天气会关闭自动
+Previsão da semana (clima automático)‖Week forecast (automatic weather)‖Pronóstico de la semana (clima automático)‖Prévisions de la semaine (météo auto)‖Прогноз на неделю (автопогода)‖توقعات الأسبوع (طقس تلقائي)‖พยากรณ์ประจำสัปดาห์ (อัตโนมัติ)‖Dự báo tuần (thời tiết tự động)‖Prakiraan minggu ini (cuaca otomatis)‖一周预报（自动天气）
