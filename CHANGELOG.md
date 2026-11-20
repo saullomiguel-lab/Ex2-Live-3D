@@ -1,5 +1,38 @@
 # Changelog
 
+## 2.9.0
+
+**Widget de carregamento**
+- A % da bateria agora acompanha a carga de verdade, com duas casas (ex.: 61,40%). Antes ficava parada em 47%.
+- Gráfico do começo ao fim da carga: da esquerda (0% de bateria) à direita (100%), com a bolinha andando junto com a %.
+- O widget fica na tela até você tocar em **Fechar**. Pausas do carregador no meio viram uma carga só.
+- Mais leve: os números são atualizados a cada poucos segundos (antes redesenhavam o carro várias vezes por segundo, o que podia deixar o papel de parede preto).
+- No app, o widget aparece no tamanho dele e o painel de Portas se ajusta embaixo.
+
+**Chuva**
+- A chuva agora fica sempre se mexendo, sem pesar: só os pingos são desenhados por cima da imagem do carro.
+- Quando a previsão disser chuva, o app pergunta **"Está chovendo aí?"**: *Chover agora* ou *Adiar chuva* (1 hora).
+- Botão **Suspender chuva** no app e no papel de parede (só aparece chovendo).
+
+**Papel de parede**
+- Botões **◀ ● ▶** para mover o carro para os lados (vale no Fixo e no Auto).
+
+**Atualizações (nova aba)**
+- **Ajustes → Atualizações**: o app consulta este GitHub, baixa a versão nova e se instala sozinho, sem outro programa.
+- Com "Buscar atualizações automaticamente" ligado, ao abrir o app ele avisa se há versão nova.
+
+**Idiomas e lado do volante**
+- O app segue o idioma do carro: português, inglês, espanhol, francês, russo, árabe, tailandês, vietnamita, indonésio e chinês.
+- Em países com volante à direita, os painéis trocam de lado. Em árabe, a tela fica da direita para a esquerda.
+- Escolha manual em **Ajustes → Idioma e região**.
+
+**Visual do carro**
+- Sombra nova embaixo do carro, no formato dele.
+- Lanternas traseiras sem o vermelho vazando para a lataria.
+- Fechado o furo do gancho de reboque no para-choque traseiro.
+
+**Sinais do carro**
+- DRL corrigido: o sinal usado antes era o do cinto do motorista.
 ## 2.8.3
 
 **Widget de carregamento (novo)**
